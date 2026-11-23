@@ -14,7 +14,10 @@ extraídos a `assets/` sin recomprimir ni modificar.
 ├── index.html                  # Estructura de la página (todas las secciones originales)
 ├── .nojekyll                   # GitHub Pages sirve los archivos tal cual
 ├── css/
-│   └── styles.css              # Los 9 bloques <style> originales, en el mismo orden
+│   ├── styles.css              # Los 9 bloques <style> originales, en el mismo orden
+│   └── negocios-ficha.css      # Estilos de la ficha de indicadores por negocio
+├── datos/
+│   └── LOGIXSC_Plantilla_Datos.xlsx  # Plantilla de datos editable
 ├── js/
 │   ├── datos.js                # Datos: dashboards Power BI y portafolio de proyectos
 │   ├── analitica-proyectos.js  # Analítica (empresas/áreas) e Implementación (filtros)
@@ -23,7 +26,9 @@ extraídos a `assets/` sin recomprimir ni modificar.
 │   ├── interactividad.js       # Barra de progreso, menú activo, animación reveal, volver arriba
 │   ├── filtro-eventos.js       # Filtros de la agenda de eventos
 │   ├── carrusel-hero.js        # Carrusel automático del inicio (flechas, puntos, teclado, swipe)
-│   └── carrusel-badge.js       # Etiqueta "CARRUSEL AUTOMÁTICO"
+│   ├── carrusel-badge.js       # Etiqueta "CARRUSEL AUTOMÁTICO"
+│   ├── negocios-datos.js       # Indicadores por negocio (datos de la ficha)
+│   └── negocios-ficha.js       # Ficha de indicadores al hacer clic en un negocio
 └── assets/
     ├── docs/
     │   ├── red-logistica-san-fernando.pdf
@@ -75,3 +80,17 @@ La versión separada se comparó contra el HTML original con Chromium (Playwrigh
   de Eventos y contador, apertura/cierre del visor PDF (botón × y clic fuera),
   flechas y puntos del carrusel, contraer/expandir secciones, menú activo al
   hacer scroll, botón "volver arriba" y enlaces a Power BI.
+
+## Ficha de indicadores por negocio
+
+En la sección **03 · Nuestros negocios**, cada tarjeta abre una ficha con:
+indicadores del mes (unidades movidas, viajes, km, toneladas, con comparación
+contra el promedio mensual), tendencia de los últimos meses, flota asignada y
+bloques propios de cada negocio (ensacado vs. tolvas, granja vs. venta, canales
+de venta, costos, almacén tercero). Tiene selector San Fernando / Chimu,
+navegación entre negocios y un botón que filtra Analítica con los dashboards
+del área.
+
+Los datos están en `js/negocios-datos.js`. Mientras `ejemplo: true`, la ficha
+muestra el aviso **DATOS DE EJEMPLO** (las cifras actuales son ilustrativas).
+Un negocio sin datos para una empresa muestra "Indicadores en preparación".
