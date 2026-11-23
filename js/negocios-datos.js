@@ -1,4 +1,7 @@
 /* ============================================================================
+   RESPALDO. La fuente principal es datos/LOGIXSC_Datos_Fichas.xlsx: el portal
+   lo lee al cargar y solo usa este archivo si no puede leer el Excel.
+   ----------------------------------------------------------------------------
    LOGIXSC+ · Indicadores por negocio (ficha de "Nuestros negocios")
    ----------------------------------------------------------------------------
    FUENTE: PDF de la red logística de cada empresa (assets/docs/):

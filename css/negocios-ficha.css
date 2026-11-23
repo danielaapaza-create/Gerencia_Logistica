@@ -373,3 +373,4 @@
 .ni-stat-note{font-style:normal;font-size:9px;color:var(--ni-text3);margin-top:2px}
 .ni-rank li.otros .name{color:var(--ni-text2);font-style:italic}
 .ni-rank li.otros .bar i{background:#b3c3d3}
+.business.ni-cargando{cursor:progress}

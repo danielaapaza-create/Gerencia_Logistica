@@ -17,6 +17,7 @@ extraídos a `assets/` sin recomprimir ni modificar.
 │   ├── styles.css              # Los 9 bloques <style> originales, en el mismo orden
 │   └── negocios-ficha.css      # Estilos de la ficha de indicadores por negocio
 ├── datos/
+│   ├── LOGIXSC_Datos_Fichas.xlsx     # FUENTE de las fichas de negocio (editar este)
 │   └── LOGIXSC_Plantilla_Datos.xlsx  # Plantilla de datos editable
 ├── js/
 │   ├── datos.js                # Datos: dashboards Power BI y portafolio de proyectos
@@ -28,7 +29,8 @@ extraídos a `assets/` sin recomprimir ni modificar.
 │   ├── carrusel-hero.js        # Carrusel automático del inicio (flechas, puntos, teclado, swipe)
 │   ├── carrusel-badge.js       # Etiqueta "CARRUSEL AUTOMÁTICO"
 │   ├── iconos.js               # Iconos Lucide (locales, sin CDN)
-│   ├── negocios-datos.js       # Indicadores por negocio (datos de la ficha)
+│   ├── negocios-datos.js       # Respaldo de los datos de las fichas
+│   ├── negocios-excel.js       # Lee datos/LOGIXSC_Datos_Fichas.xlsx en el navegador
 │   └── negocios-ficha.js       # Ficha de indicadores al hacer clic en un negocio
 └── assets/
     ├── docs/
@@ -102,6 +104,20 @@ pregunta) con navegación lateral (barra superior en móvil):
 Los capítulos sin datos no se muestran. Los volúmenes se comparan en tono
 neutro; solo costos (menor es mejor) y ventas (mayor es mejor) se marcan como
 *Favorable* o *A vigilar*.
+
+### Cómo actualizar los datos de las fichas
+
+1. Editar `datos/LOGIXSC_Datos_Fichas.xlsx` (celdas amarillas; la hoja LEEME
+   explica cada hoja y la columna "Origen" de cada cifra).
+2. Subirlo a GitHub con el mismo nombre: carpeta `datos` → **Add file** →
+   **Upload files** → **Commit changes**.
+3. Esperar 1–2 minutos y recargar el portal con Ctrl + F5.
+
+El portal lee el Excel directamente en el navegador (`js/negocios-excel.js`,
+sin librerías externas). Si no puede leerlo —por ejemplo, al abrir
+`index.html` con doble clic en vez de un servidor—, usa la copia de respaldo
+`js/negocios-datos.js`. Esa copia no se actualiza sola: conviene regenerarla
+de vez en cuando a partir del Excel.
 
 **Fuente actual de los datos:** los PDF de red logística (`assets/docs/`):
 costos, costo unitario, flota y volumen anual 2024, y los repartos del diagrama

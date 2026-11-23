@@ -8,7 +8,18 @@
    Datos: js/negocios-datos.js · Iconos: js/iconos.js (Lucide)
    ========================================================================== */
 (function () {
-  const DATA = typeof negociosIndicadores !== 'undefined' ? negociosIndicadores : null;
+  /* Datos: se leen de datos/LOGIXSC_Datos_Fichas.xlsx; si no se puede, se usa el
+     respaldo de js/negocios-datos.js. */
+  let DATA = typeof negociosIndicadores !== 'undefined' ? negociosIndicadores : null;
+  const EXCEL_FICHAS = 'datos/LOGIXSC_Datos_Fichas.xlsx';
+  window.LOGIX_FICHAS_FUENTE = 'respaldo';
+  let cargaExcel = null;
+  if (typeof cargarFichasExcel === 'function' && location.protocol !== 'file:') {
+    cargaExcel = cargarFichasExcel(EXCEL_FICHAS)
+      .then(d => { DATA = d; window.LOGIX_FICHAS_FUENTE = 'excel'; })
+      .catch(err => console.warn('[LOGIXSC+] No se pudo leer ' + EXCEL_FICHAS + '; se usa js/negocios-datos.js.', err))
+      .finally(() => { cargaExcel = null; });
+  }
   const cards = [...document.querySelectorAll('#negocios .business')];
   if (!DATA || !cards.length) return;
   const ic = (n, c) => (typeof icono === 'function' ? icono(n, c) : '');
@@ -90,8 +101,8 @@
     { id: 'destino', icono: 'flag', nombre: 'Destino', desc: 'Clientes, granjas o almacenes que reciben el producto.' }
   ];
 
-  const empresas = Object.keys(DATA.empresas);
-  let empresaActual = empresas[0], negocioActual = null, ultimoFoco = null;
+  const listaEmpresas = () => Object.keys(DATA.empresas);
+  let empresaActual = listaEmpresas()[0], negocioActual = null, ultimoFoco = null;
 
   /* ---------------- modal ---------------- */
   const modal = document.createElement('div');
@@ -123,7 +134,9 @@
     });
   });
 
-  function abrir(card, nombre) {
+  async function abrir(card, nombre) {
+    if (cargaExcel) { card.classList.add('ni-cargando'); await Promise.race([cargaExcel, new Promise(r => setTimeout(r, 4000))]); card.classList.remove('ni-cargando'); }
+    if (!DATA.empresas[empresaActual]) empresaActual = listaEmpresas()[0];
     ultimoFoco = card;
     negocioActual = { card, nombre };
     render();
@@ -166,7 +179,7 @@
           <span class="ni-crumb">NUESTROS NEGOCIOS <i>/</i> ${e(nombre.toUpperCase())}</span>
           <div class="ni-head-actions">
             <div class="ni-switch" role="tablist" aria-label="Empresa">
-              ${empresas.map(em => `<button type="button" role="tab" aria-selected="${em === empresaActual}" class="${em === empresaActual ? 'on' : ''} ${em === 'CHIMU' ? 'chimu' : ''}" data-empresa="${e(em)}">${e(em)}</button>`).join('')}
+              ${listaEmpresas().map(em => `<button type="button" role="tab" aria-selected="${em === empresaActual}" class="${em === empresaActual ? 'on' : ''} ${em === 'CHIMU' ? 'chimu' : ''}" data-empresa="${e(em)}">${e(em)}</button>`).join('')}
             </div>
             <button type="button" class="ni-close" aria-label="Cerrar">${ic('x')}</button>
           </div>
