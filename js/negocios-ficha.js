@@ -42,6 +42,7 @@
   const ICONO_UNIDAD = { aves: 'bird', pollitos: 'bird', pavos: 'bird', huevos: 'egg', cerdos: 'paw-print', sacos: 'package', contenedores: 'container', 'ítems': 'boxes' };
   const MOVILIZADOS = { aves: 'Aves movilizadas' };
   function kpiInfo(k) {
+    if (k.titulo) return { icono: k.icono || 'chart-column', nombre: k.titulo, def: k.def || k.titulo, sentido: k.sentido || 'neutral' };
     const l = k.label.toLowerCase();
     if (l.startsWith('unidades')) return {
       icono: ICONO_UNIDAD[k.unidad] || 'boxes',
@@ -60,8 +61,18 @@
     'Granel (tolvas)': ['container', 'Alimento transportado suelto en unidades tolva, sin sacos.'],
     'Ensacado': ['package', 'Alimento despachado en sacos.'],
     'Almacén propio': ['warehouse', 'Almacén operado por la empresa.'],
-    'Almacén tercero': ['handshake', 'Almacén operado por un proveedor externo.']
+    'Almacén tercero': ['handshake', 'Almacén operado por un proveedor externo.'],
+    'Clientes (venta)': ['store', 'Pollo vivo vendido a clientes.'],
+    'Plantas de beneficio (CBA)': ['factory', 'Centro de beneficio avícola: planta donde se procesa el pollo.'],
+    'Granjas propias': ['tractor', 'Alimento enviado a granjas de la empresa.'],
+    'Directo a planta': ['factory', 'Macroinsumos que van del puerto o proveedor directo a la planta de alimento.'],
+    'Puerto Callao': ['map-pin', 'Macroinsumos que ingresan por el Puerto del Callao.'],
+    'Proveedor local': ['handshake', 'Macroinsumos comprados a proveedores nacionales.'],
+    'Flota propia (FP)': ['badge-check', 'Unidades de la flota de la empresa.'],
+    'Flota tercera (FT)': ['handshake', 'Unidades de transportistas contratados.'],
+    'Renting': ['calendar', 'Unidades alquiladas a largo plazo (alquiler operativo).']
   };
+  const glos = l => GLOSARIO[l] || ['map-pin', l];
   const TERM = {
     propias: 'Unidades de la flota de la empresa.',
     terceros: 'Unidades de transportistas contratados.',
@@ -141,7 +152,10 @@
     const img = card.querySelector('img')?.getAttribute('src') || '';
     const tag = card.querySelector('.business-tag')?.textContent.trim() || '';
     const desc = card.querySelector('p')?.textContent.trim() || '';
-    const d = (DATA.empresas[empresaActual] || {})[nombre];
+    const raw = (DATA.empresas[empresaActual] || {})[nombre];
+    const d = raw && !raw.noAplica ? raw : null;
+    const noAplica = raw && raw.noAplica;
+    const fuente = (DATA.fuentes || {})[empresaActual];
     const idx = cards.indexOf(card);
     const caps = d ? capitulos(d) : [];
     const ejemplo = DATA.ejemplo && d;
@@ -166,6 +180,7 @@
           <div class="ni-head-meta">
             <span>${ic('calendar')}<small>PERIODO</small><b>${e(DATA.periodo)}</b></span>
             ${d ? `<span>${ic('user-round')}<small>RESPONSABLE</small><b>${e(d.responsable || '—')}</b></span>` : ''}
+            ${d && !DATA.ejemplo && fuente ? `<span class="ni-src-chip" tabindex="0" data-tip-title="Fuente de los datos" data-tip="${e(fuente)}">${ic('info')}<small>FUENTE</small><b>PDF red logística</b></span>` : ''}
             ${ejemplo ? `<span class="ni-sample-chip" tabindex="0" data-tip-title="Datos de ejemplo" data-tip="Cifras ilustrativas para validar el diseño. Se reemplazan con la plantilla de datos.">${ic('info')}<b>DATOS DE EJEMPLO</b></span>` : ''}
           </div>
         </div>
@@ -177,12 +192,12 @@
                 <span class="ni-nav-ico">${ic(c.icono)}</span>
                 <span class="ni-nav-txt"><small>${e(c.kicker)}</small><b>${e(c.nav)}</b></span>
               </a>`).join('')}
-            ${caps.length ? '' : `<p class="ni-nav-empty">${ic('clock-3')} Este negocio aún no tiene capítulos para ${e(empresaActual)}.</p>`}
+            ${caps.length ? '' : `<p class="ni-nav-empty">${ic(noAplica ? 'info' : 'clock-3')} ${noAplica ? `Este negocio no forma parte de la red de ${e(empresaActual)}.` : `Este negocio aún no tiene capítulos para ${e(empresaActual)}.`}</p>`}
           </nav>
           ${acciones(d, idx, 'side')}
         </aside>
         <main class="ni-main" tabindex="-1">
-          ${d ? caps.map(c => c.html).join('') : vacio(nombre)}
+          ${d ? caps.map(c => c.html).join('') : vacio(nombre, noAplica)}
           ${acciones(d, idx, 'main')}
         </main>
       </div>`;
@@ -244,7 +259,12 @@
     if (s) s.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
   }
 
-  function vacio(nombre) {
+  function vacio(nombre, noAplica) {
+    if (noAplica) return `<div class="ni-empty">
+      <div class="ni-empty-icon">${ic('info')}</div>
+      <b>${e(nombre)} no forma parte de la red logística de ${e(empresaActual)}</b>
+      <span>El documento de red logística de ${e(empresaActual)} no incluye este negocio.</span>
+    </div>`;
     return `<div class="ni-empty">
       <div class="ni-empty-icon">${ic('clock-3')}</div>
       <b>Indicadores de ${e(nombre)} · ${e(empresaActual)} en preparación</b>
@@ -282,18 +302,21 @@
 
     cap('ni-c-lectura', 'sparkles', 'Lectura rápida', `¿Qué operación estamos observando?`, '', lectura(d, kp, entregas, atencion), false);
     cap('ni-c-flujo', 'workflow', 'La operación', '¿Cómo funciona la operación?',
-      'Recorrido conceptual del producto, de principio a fin. Las cifras indican dónde se mide cada etapa.', flujo(d, kp, entregas, canales), false);
+      d.flujo ? 'Recorrido del producto según el diagrama de red logística, con la cifra principal de cada etapa.' : 'Recorrido conceptual del producto, de principio a fin. Las cifras indican dónde se mide cada etapa.', flujo(d, kp, entregas, canales), false);
+    const conProm = (d.kpis || []).some(k => k.promedio);
     if ((d.kpis || []).length) cap('ni-c-volumen', 'chart-column', 'Volumen', '¿Cuánto movilizamos?',
-      'Lo que la operación movió durante el mes, comparado con su promedio mensual.', volumen(d));
+      conProm ? 'Lo que la operación movió durante el mes, comparado con su promedio mensual.' : 'Volumen movilizado según la red logística. Cada indicador señala su periodo.', volumen(d));
     if (d.flota) cap('ni-c-recursos', 'truck', 'Recursos', '¿Con qué recursos operamos?',
-      'La flota asignada a este negocio y qué parte de ella está monitoreada.', recursos(d, kp));
+      'La flota asignada a este eslabón de la red y cómo se compone.', recursos(d, kp));
     if (entregas.length) cap('ni-c-entregas', entregas[0].capitulo === 'entregas' && /entrega/i.test(entregas[0].pregunta || '') ? 'package-check' : 'layers',
       entregas.length === 1 && /entrega/i.test(entregas[0].pregunta || '') ? 'Entregas' : 'Distribución',
-      entregas[0].pregunta || '¿Cómo distribuimos?', 'Cómo se reparte el total entre las alternativas de la operación.', entregas.map(splitCard).join(''));
-    if (canales.length) cap('ni-c-canales', 'store', 'Canales', canales[0].pregunta || '¿A qué canales atendemos?',
-      'Participación de cada canal de venta, de mayor a menor.', canales.map(rankingCard).join(''));
+      entregas[0].pregunta || '¿Cómo distribuimos?', 'Cómo se reparte el volumen entre orígenes y destinos de la operación.', entregas.map(splitCard).join(''));
+    const NAV_RANK = { canal: 'Canales', destino: 'Destinos', zona: 'Zonas', rueda: 'Ruedas', origen: 'Orígenes' };
+    if (canales.length) cap('ni-c-canales', 'store', NAV_RANK[canales[0].sustantivo] || 'Canales', canales[0].pregunta || '¿A qué canales atendemos?',
+      'Participación de cada uno, ordenada de mayor a menor.', canales.map(rankingCard).join(''));
+    const resProm = resultados.some(b => (b.items || []).some(i => /promedio/i.test(i.label)));
     if (resultados.length) cap('ni-c-resultados', 'trending-up', 'Resultados', resultados[0].pregunta || '¿Qué resultados obtuvimos?',
-      'Indicadores de resultado del periodo y su comparación con el promedio mensual.', resultados.map(b => statsCard(b, kp)).join(''));
+      resProm ? 'Indicadores de resultado del periodo y su comparación con el promedio mensual.' : 'Costo logístico del año y costo por unidad movilizada.', resultados.map(b => statsCard(b, kp)).join(''));
     cap('ni-c-atencion', 'circle-alert', 'Atención', '¿Qué información requiere atención?',
       'Puntos detectados automáticamente a partir de los datos cargados.', atencionHtml(atencion), false);
     return out;
@@ -301,17 +324,18 @@
 
   /* ---------- Lectura rápida ---------- */
   function lectura(d, kp, entregas, atencion) {
-    const u = kp('unidades'), v = kp('viajes'), km = kp('km'), f = d.flota;
+    const u = kp('unidades') || (d.kpis || [])[0], v = kp('viajes'), km = kp('km'), f = d.flota;
     const items = [];
     if (u) {
       const cu = conUnidad(u.valor, u.unidad);
-      items.push([kpiInfo(u).icono, 'Volumen', `Movilizamos <b>${cu.num} ${cu.txt}</b>${v ? ` en <b>${nf(v.valor)} viajes</b>` : ''}${km ? ` y <b>${corto(km.valor)} km</b>` : ''}.`, 'ni-c-volumen']);
+      const per = /2024/.test(u.nota || '') ? ' en 2024' : /mensual/i.test(u.nota || '') ? ' al mes' : '';
+      items.push([kpiInfo(u).icono, 'Volumen', `Movilizamos <b>${cu.num} ${cu.txt}</b>${per}${v ? ` en <b>${nf(v.valor)} viajes</b>` : ''}${km ? ` y <b>${corto(km.valor)} km</b>` : ''}.`, 'ni-c-volumen']);
     }
-    if (f) items.push(['truck', 'Recursos', `Operamos con <b>${nf(f.unidades)} unidades</b>: ${nf(f.propias)} propias y ${nf(f.terceros)} de terceros.`, 'ni-c-recursos']);
+    if (f) items.push(['truck', 'Recursos', `Operamos con <b>${nf(f.unidades)} ${f.unidades === 1 ? 'unidad' : 'unidades'}</b>: ${composicion(f).map(c => `${nf(c.valor)} ${e(c.label)}`).join(', ')}.`, 'ni-c-recursos']);
     if (entregas[0]) {
       const b = entregas[0], tot = b.partes.reduce((s, p) => s + p.valor, 0) || 1;
       const top = [...b.partes].sort((a, c) => c.valor - a.valor)[0];
-      items.push([(GLOSARIO[top.label] || ['layers'])[0], 'Distribución', `${e(b.titulo)}: <b>${e(top.label)}</b> concentra el <b>${pct(top.valor / tot * 100, 0)}</b> del total.`, 'ni-c-entregas']);
+      items.push([glos(top.label)[0], 'Distribución', `${e(b.titulo)}: <b>${e(top.label)}</b> concentra el <b>${pct(top.valor / tot * 100, 0)}</b> del total.`, 'ni-c-entregas']);
     }
     const alertas = atencion.filter(a => a.nivel !== 'info').length;
     items.push(['circle-alert', 'Atención', alertas ? `<b>${alertas} ${alertas === 1 ? 'punto requiere' : 'puntos requieren'} atención</b> en este periodo.` : 'Sin puntos críticos en este periodo.', 'ni-c-atencion']);
@@ -341,10 +365,10 @@
           <div class="ni-flow-node"><span>${ic(p.icono || 'map-pin')}</span><i>${String(i + 1).padStart(2, '0')}</i></div>
           <b>${e(p.nombre)}</b>
           <p>${e(p.desc)}</p>
-          ${ind[p.id] ? `<em>${e(ind[p.id])}</em>` : ''}
+          ${(p.dato || ind[p.id]) ? `<em>${e(p.dato || ind[p.id])}</em>` : ''}
         </div>`).join('')}
     </div>
-    <p class="ni-note">${ic('info')} Flujo conceptual: resume las etapas generales y puede adaptarse a cada negocio.</p>`;
+    <p class="ni-note">${ic('info')} ${d.flujo ? 'Etapas tomadas del diagrama de red logística.' : 'Flujo conceptual: resume las etapas generales y puede adaptarse a cada negocio.'}</p>`;
   }
 
   /* ---------- 01 Volumen ---------- */
@@ -378,6 +402,7 @@
       <div class="ni-kpi-top"><span class="ni-kpi-ico">${ic(info.icono)}</span><small>${e(info.nombre.toUpperCase())}</small><span class="ni-kpi-help">${ic('info')}</span></div>
       <div class="ni-kpi-val"><strong>${cu.num}</strong><span>${e(cu.txt)}</span></div>
       ${delta(k.valor, k.promedio, info.sentido, 'respecto al promedio mensual')}
+      ${k.nota ? `<p class="ni-kpi-note">${ic('calendar')}${e(k.nota)}</p>` : ''}
       ${micro}
     </article>`;
   }
@@ -446,38 +471,46 @@
   }
 
   /* ---------- 02 Recursos ---------- */
+  function composicion(f) {
+    if (f.composicion && f.composicion.length) return f.composicion;
+    const out = [];
+    if (f.propias != null) out.push({ label: 'Propias', valor: f.propias });
+    if (f.terceros != null) out.push({ label: 'De terceros', valor: f.terceros });
+    return out;
+  }
   function recursos(d, kp) {
     const f = d.flota, v = kp('viajes'), km = kp('km');
-    const tot = f.unidades || 1, pP = f.propias / tot * 100, pT = f.terceros / tot * 100, gps = Math.round(f.gps / tot * 100);
-    const escala = tot > 60 ? Math.ceil(tot / 60) : 1;
-    const nP = Math.round(f.propias / escala), nT = Math.round(f.terceros / escala);
-    const trucks = Array.from({ length: nP }, () => `<i class="p">${ic('truck')}</i>`).join('') + Array.from({ length: nT }, () => `<i class="t">${ic('truck')}</i>`).join('');
+    const tot = f.unidades || 1;
+    const comp = composicion(f).map((c, i) => ({ ...c, i, pc: c.valor / tot * 100, g: glos(c.label) }));
+    const escala = tot > 72 ? Math.ceil(tot / 60) : 1;
+    const trucks = comp.map(c => Array.from({ length: Math.round(c.valor / escala) }, () => `<i class="c${c.i}">${ic('truck')}</i>`).join('')).join('');
     const C = 2 * Math.PI * 42;
+    const hayGps = f.gps != null;
+    const gps = hayGps ? Math.round(f.gps / tot * 100) : 0;
     return `<div class="ni-res">
       <article class="ni-card ni-fleet">
-        <div class="ni-card-head"><div><h5>${nf(f.unidades)} unidades asignadas</h5><p>${f.tipo ? `Tipo principal: <b>${e(f.tipo)}</b>` : ''}</p></div>
-          <span class="ni-legend"><i class="sw p"></i>${term('Propias', TERM.propias)} <i class="sw t"></i>${term('Terceros', TERM.terceros)}</span></div>
-        <div class="ni-trucks" role="img" aria-label="${nf(f.propias)} unidades propias y ${nf(f.terceros)} de terceros">${trucks}</div>
-        ${escala > 1 ? `<p class="ni-note">Cada icono representa ${escala} unidades.</p>` : ''}
+        <div class="ni-card-head"><div><h5>${nf(f.unidades)} ${f.unidades === 1 ? 'unidad asignada' : 'unidades asignadas'}</h5><p>${f.detalle ? e(f.detalle) : f.tipo ? `Tipo principal: <b>${e(f.tipo)}</b>` : ''}</p></div>
+          <span class="ni-legend">${comp.map(c => `<i class="sw c${c.i}"></i>${term(e(c.label), c.g[1])}`).join(' ')}</span></div>
+        <div class="ni-trucks" role="img" aria-label="${e(comp.map(c => c.valor + ' ' + c.label).join(', '))}">${trucks}</div>
+        ${escala > 1 ? `<p class="ni-note">${ic('info')} Cada camión representa ${escala} unidades.</p>` : ''}
         <div class="ni-stack" aria-hidden="true">
-          <i class="p" style="--w:${pP}%" tabindex="0" data-tip-title="Propias" data-tip="${nf(f.propias)} unidades · ${pct(pP)}"></i>
-          <i class="t" style="--w:${pT}%" tabindex="0" data-tip-title="Terceros" data-tip="${nf(f.terceros)} unidades · ${pct(pT)}"></i>
+          ${comp.map(c => `<i class="c${c.i}" style="--w:${c.pc}%" tabindex="0" data-tip-title="${e(c.label)}" data-tip="${e(nf(c.valor) + ' unidades · ' + pct(c.pc))}"></i>`).join('')}
         </div>
         <div class="ni-stack-legend">
-          <div><span class="sw p"></span><b>${nf(f.propias)}</b><small>propias · ${pct(pP, 0)}</small></div>
-          <div><span class="sw t"></span><b>${nf(f.terceros)}</b><small>de terceros · ${pct(pT, 0)}</small></div>
+          ${comp.map(c => `<div><span class="sw c${c.i}"></span><b>${nf(c.valor)}</b><small>${e(c.label)} · ${pct(c.pc, 0)}</small></div>`).join('')}
         </div>
       </article>
       <article class="ni-card ni-gps">
         <div class="ni-card-head"><div><h5>Cobertura de monitoreo</h5><p>${term('GPS / Segurtrack', TERM.gps)}</p></div></div>
-        <div class="ni-ring">
+        ${hayGps ? `<div class="ni-ring">
           <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="42" class="bg"/><circle cx="50" cy="50" r="42" class="fg" style="--dash:${C * gps / 100} ${C}"/></svg>
           <div><strong>${gps}%</strong><small>con GPS</small></div>
         </div>
-        <p class="ni-ring-txt"><b>${nf(f.gps)} de ${nf(f.unidades)}</b> unidades monitoreadas en tiempo real.</p>
+        <p class="ni-ring-txt"><b>${nf(f.gps)} de ${nf(f.unidades)}</b> unidades monitoreadas en tiempo real.</p>`
+        : `<div class="ni-gps-empty">${ic('satellite')}<b>Dato pendiente</b><small>La red logística no indica cuántas unidades tienen GPS.</small></div>`}
       </article>
       <article class="ni-card ni-photo">
-        ${f.imagen ? `<img src="${e(f.imagen)}" alt="Flota de ${e(f.tipo || 'transporte')}">` : `<div class="ni-photo-empty">${ic('image')}<b>Foto de flota</b><small>pendiente</small></div>`}
+        ${f.imagen ? `<img src="${e(f.imagen)}" alt="Flota de ${e(f.tipo || 'transporte')}">` : `<div class="ni-photo-empty">${ic('image')}<b>Foto de flota</b><small>${f.tipo ? e(f.tipo) + ' · ' : ''}pendiente</small></div>`}
       </article>
       ${v && km ? `<article class="ni-card ni-derived">
         <div class="ni-derived-item" tabindex="0" data-tip-title="Cálculo" data-tip="Kilómetros recorridos ÷ viajes realizados.">${ic('route')}<div><small>RECORRIDO PROMEDIO POR VIAJE</small><strong>${nf(km.valor / v.valor)} <span>km</span></strong></div><em>Cálculo</em></div>
@@ -487,42 +520,57 @@
   }
 
   /* ---------- 03 Distribución / entregas ---------- */
+  function cantidad(v, u) { const c = conUnidad(v, u); return c.num + ' ' + c.txt; }
   function splitCard(b) {
     const tot = b.partes.reduce((s, p) => s + p.valor, 0) || 1;
-    const ps = b.partes.map((p, i) => ({ ...p, i, pc: p.valor / tot * 100, g: GLOSARIO[p.label] || ['layers', p.label] }));
-    const top = [...ps].sort((a, c) => c.pc - a.pc)[0], low = ps.find(p => p !== top);
-    const deCada10 = Math.round(top.pc / 10);
-    const lead = low ? `<b>${e(top.label)}</b> concentra el ${pct(top.pc, 0)} del total${deCada10 >= 1 && deCada10 <= 9 ? ` (aprox. ${deCada10} de cada 10)` : ''}; ${e(low.label.toLowerCase())} representa el ${pct(low.pc, 0)}.` : '';
+    const ps = b.partes.map((p, i) => ({ ...p, i, pc: p.valor / tot * 100, g: glos(p.label) }));
+    const ord = [...ps].sort((a, c) => c.pc - a.pc), top = ord[0];
+    let lead = '';
+    if (ps.length === 2) {
+      const low = ord[1], d10 = Math.round(top.pc / 10);
+      lead = `<b>${e(top.label)}</b> concentra el ${pct(top.pc, 0)} del total${d10 >= 1 && d10 <= 9 ? ` (aprox. ${d10} de cada 10)` : ''}; ${e(low.label)} representa el ${pct(low.pc, top.pc > 98 ? 1 : 0)}.`;
+    } else if (ps.length > 2) {
+      lead = `<b>${e(top.label)}</b> concentra el ${pct(top.pc, 0)} del total; le siguen ${ord.slice(1).map(p => `${e(p.label)} (${pct(p.pc, 0)})`).join(' y ')}.`;
+    }
+    const valTxt = p => b.unidad === '%' ? '' : ' · ' + cantidad(p.valor, b.unidad);
     return `<article class="ni-card ni-split-card">
       <div class="ni-card-head"><div><h5>${e(b.titulo)}</h5><p>${lead}</p></div></div>
       <div class="ni-seg">
-        ${ps.map(p => `<div class="seg s${p.i}" style="--w:${p.pc}%" tabindex="0" data-tip-title="${e(p.label)}" data-tip="${e(p.g[1] + ' · ' + pct(p.pc) + (b.unidad === '%' ? '' : ' · ' + nf(p.valor) + ' ' + unidadLarga(b.unidad)))}">
+        ${ps.map(p => `<div class="seg s${p.i}" style="--w:${p.pc}%" tabindex="0" data-tip-title="${e(p.label)}" data-tip="${e((p.g[1] !== p.label ? p.g[1] + ' · ' : '') + pct(p.pc) + valTxt(p))}">
             ${p.pc >= 14 ? `<span>${ic(p.g[0])}${pct(p.pc, 0)}</span>` : ''}</div>`).join('')}
       </div>
       <div class="ni-seg-legend">
         ${ps.map(p => `<div class="ni-seg-item">
           <span class="ni-seg-ico s${p.i}">${ic(p.g[0])}</span>
-          <div><b>${pct(p.pc, 0)}</b><span>${term(e(p.label), p.g[1])}${b.unidad === '%' ? '' : ` · ${e(conUnidad(p.valor, b.unidad).num + ' ' + conUnidad(p.valor, b.unidad).txt)}`}</span></div>
+          <div><b>${pct(p.pc, p.pc < 2 ? 1 : 0)}</b><span>${p.g[1] !== p.label ? term(e(p.label), p.g[1]) : e(p.label)}${e(valTxt(p))}</span></div>
         </div>`).join('')}
       </div>
+      ${b.nota ? `<p class="ni-note">${ic('info')} ${e(b.nota)}${b.unidad !== '%' ? ' Unidad: ' + e(unidadLarga(b.unidad)) + '.' : ''}</p>` : ''}
     </article>`;
   }
 
-  /* ---------- 04 Canales ---------- */
+  /* ---------- 04 Canales / destinos ---------- */
   function rankingCard(b) {
-    const ps = [...b.partes].sort((a, c) => c.valor - a.valor);
-    const tot = ps.reduce((s, p) => s + p.valor, 0) || 1, max = ps[0].valor || 1;
+    let ps = [...b.partes].sort((a, c) => c.valor - a.valor);
+    const tot = ps.reduce((s, p) => s + p.valor, 0) || 1;
+    if (ps.length > 9) {
+      const resto = ps.slice(8);
+      ps = ps.slice(0, 8).concat({ label: `Otros (${resto.length} destinos)`, valor: resto.reduce((s, p) => s + p.valor, 0), otros: true });
+    }
+    const max = Math.max(...ps.map(p => p.valor)) || 1;
     const top2 = ps.slice(0, 2).reduce((s, p) => s + p.valor, 0) / tot * 100;
+    const sus = b.sustantivo || 'canal', fem = ['zona', 'rueda'].includes(sus);
     return `<article class="ni-card ni-rank-card">
-      <div class="ni-card-head"><div><h5>${e(ps[0].label)} es el principal canal, con ${pct(ps[0].valor / tot * 100, 0)}</h5>
-        <p>${ps.length > 2 ? `Los dos primeros canales concentran el ${pct(top2, 0)} del total.` : ''}</p></div>
-        <span class="ni-legend">% de participación</span></div>
+      <div class="ni-card-head"><div><h5>${e(ps[0].label)} es ${fem ? 'la principal' : 'el principal'} ${e(sus)}, con ${pct(ps[0].valor / tot * 100, 0)}</h5>
+        <p>${ps.length > 2 ? `${fem ? 'Las dos primeras' : 'Los dos primeros'} concentran el ${pct(top2, 0)} del total.` : ''}</p></div>
+        <span class="ni-legend">% del total</span></div>
       <ol class="ni-rank">
-        ${ps.map((p, i) => `<li class="${i === 0 ? 'top' : ''}" tabindex="0" data-tip-title="${e(p.label)}" data-tip="${e(pct(p.valor / tot * 100) + ' de participación · puesto ' + (i + 1) + ' de ' + ps.length)}">
-          <span class="pos">${i + 1}</span><span class="name">${e(p.label)}</span>
+        ${ps.map((p, i) => `<li class="${i === 0 ? 'top' : ''} ${p.otros ? 'otros' : ''}" tabindex="0" data-tip-title="${e(p.label)}" data-tip="${e(pct(p.valor / tot * 100) + (b.unidad && b.unidad !== '%' ? ' · ' + cantidad(p.valor, b.unidad) : '') + (p.otros ? '' : ' · puesto ' + (i + 1) + ' de ' + b.partes.length))}">
+          <span class="pos">${p.otros ? '+' : i + 1}</span><span class="name">${e(p.label)}</span>
           <span class="bar"><i style="--w:${p.valor / max * 100}%"></i></span>
-          <b>${pct(p.valor / tot * 100, 0)}</b></li>`).join('')}
+          <b>${pct(p.valor / tot * 100, p.valor / tot < .01 ? 1 : 0)}</b></li>`).join('')}
       </ol>
+      ${b.nota ? `<p class="ni-note">${ic('info')} ${e(b.nota)}${b.unidad && b.unidad !== '%' ? ' Unidad: ' + e(unidadLarga(b.unidad)) + '.' : ''}</p>` : ''}
     </article>`;
   }
 
@@ -532,15 +580,16 @@
     const prom = items.find(it => /promedio/i.test(it.label));
     const mes = items.find(it => it !== prom && /mes/i.test(it.label));
     const esVenta = /venta/i.test(b.titulo);
-    const val = it => it.moneda ? { num: soles(it.valor), txt: '' } : conUnidad(it.valor, it.unidad);
+    const val = it => it.moneda ? { num: it.decimales != null ? 'S/ ' + Number(it.valor).toFixed(it.decimales) : soles(it.valor), txt: '' }
+      : it.unidad === '%' ? { num: pct(it.valor, 0), txt: '' } : conUnidad(it.valor, it.unidad);
     const tiles = items.map(it => {
       const vv = val(it);
-      const ico = it.moneda ? 'coins' : it.unidad === 't' ? 'scale' : 'chart-column';
+      const ico = it.moneda ? 'coins' : it.unidad === 't' ? 'scale' : it.unidad === '%' ? 'chart-column' : 'chart-column';
       const sufijo = esVenta && it.unidad === 't' ? ' vendidas' : '';
       const dl = it === mes && prom ? delta(it.valor, prom.valor, it.moneda ? 'menor' : esVenta ? 'mayor' : 'neutral', 'respecto al promedio mensual') : '';
       return `<div class="ni-stat ${it === mes ? 'main' : ''}">
         <div class="ni-stat-top">${ic(ico)}<small>${e(it.label.toUpperCase())}</small></div>
-        <strong>${e(vv.num)}</strong><span>${e(vv.txt + sufijo)}</span>${dl}
+        <strong>${e(vv.num)}</strong><span>${e(vv.txt + sufijo)}</span>${dl}${it.nota ? `<em class="ni-stat-note">${e(it.nota)}</em>` : ''}
       </div>`;
     }).join('');
     let compara = '';
@@ -555,7 +604,7 @@
       </div>`;
     }
     return `<article class="ni-card ni-stats-card">
-      <div class="ni-card-head"><div><h5>${e(b.titulo)}</h5><p>${b.items.some(i => i.moneda) ? 'Montos en soles (S/).' : esVenta ? 'Unidad: toneladas (t) vendidas.' : ''}</p></div></div>
+      <div class="ni-card-head"><div><h5>${e(b.titulo)}</h5><p>${b.items.some(i => i.moneda) ? 'Montos en soles (S/). El costo unitario es el costo logístico dividido entre el volumen movilizado.' : esVenta ? 'Unidad: toneladas (t) vendidas.' : ''}</p></div></div>
       <div class="ni-stats">${tiles}</div>
       ${compara}
     </article>`;
@@ -574,7 +623,8 @@
       if (mes.moneda && mes.valor > prom.valor) out.push({ nivel: 'vigilar', icono: 'coins', txt: `${b.titulo}: el costo del mes supera en ${pct((mes.valor - prom.valor) / prom.valor * 100)} al promedio mensual.` });
       if (!mes.moneda && /venta/i.test(b.titulo) && mes.valor < prom.valor) out.push({ nivel: 'vigilar', icono: 'trending-down', txt: `${b.titulo}: la venta del mes está ${pct((prom.valor - mes.valor) / prom.valor * 100)} por debajo del promedio.` });
     });
-    if (f && f.gps < f.unidades) out.push({ nivel: 'vigilar', icono: 'satellite', txt: `${nf(f.unidades - f.gps)} unidades sin monitoreo GPS / Segurtrack.` });
+    (d.pendientes || []).forEach(txt => out.push({ nivel: 'pendiente', icono: /gps/i.test(txt) ? 'satellite' : /km|viaje/i.test(txt) ? 'route' : 'list-checks', txt }));
+    if (f && f.gps != null && f.gps < f.unidades) out.push({ nivel: 'vigilar', icono: 'satellite', txt: `${nf(f.unidades - f.gps)} unidades sin monitoreo GPS / Segurtrack.` });
     if (f && !f.imagen) out.push({ nivel: 'pendiente', icono: 'image', txt: 'Foto de la flota pendiente de cargar.' });
     if (!d.responsable || /confirmar/i.test(d.responsable)) out.push({ nivel: 'pendiente', icono: 'user-round', txt: 'Responsable de datos por confirmar.' });
     if (DATA.ejemplo) out.push({ nivel: 'info', icono: 'info', txt: 'Las cifras mostradas son de ejemplo y deben reemplazarse con datos reales.' });

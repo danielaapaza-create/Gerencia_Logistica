@@ -103,6 +103,12 @@ Los capítulos sin datos no se muestran. Los volúmenes se comparan en tono
 neutro; solo costos (menor es mejor) y ventas (mayor es mejor) se marcan como
 *Favorable* o *A vigilar*.
 
+**Fuente actual de los datos:** los PDF de red logística (`assets/docs/`):
+costos, costo unitario, flota y volumen anual 2024, y los repartos del diagrama
+de red (San Fernando: mensual; Chimu: anual). El PDF no trae viajes, km ni GPS:
+la ficha los muestra como "dato pendiente". Cerdo vivo y Pavo vivo no figuran
+en la red de Chimu.
+
 Archivos: `js/negocios-datos.js` (datos), `js/negocios-ficha.js` (lógica),
 `css/negocios-ficha.css` (estilos), `js/iconos.js` (iconos Lucide incluidos
 localmente, licencia ISC). Mientras `ejemplo: true`, la ficha muestra el aviso

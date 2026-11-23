@@ -7,7 +7,7 @@
    un sentido de negocio; los volúmenes se muestran en tono neutro.
    ========================================================================== */
 .ni-modal{
-  --ni-s1:#0758a8; --ni-s2:#62a8e8; --ni-s2-ink:#0b3f73;
+  --ni-s1:#0758a8; --ni-s2:#62a8e8; --ni-s2-ink:#0b3f73; --ni-s3:#d9480f;
   --ni-surface:#ffffff; --ni-canvas:#f4f7fa; --ni-soft:#eef3f8;
   --ni-text:#142b43; --ni-text2:#4f6479; --ni-text3:#7b8fa4;
   --ni-fav:#18794e; --ni-fav-bg:#e8f5ee; --ni-warn:#9a5b00; --ni-warn-bg:#fff4e0;
@@ -183,14 +183,17 @@
 .ni-fleet{grid-row:span 2}
 .ni-trucks{display:flex;flex-wrap:wrap;gap:6px 4px;font-size:22px;margin:6px 0 16px}
 .ni-trucks i{display:grid;place-items:center;width:30px;height:28px;opacity:0;transform:translateY(4px);transition:opacity .35s,transform .35s}
-.ni-trucks i.p{color:var(--ni-s1)}
-.ni-trucks i.t{color:var(--ni-s2)}
+.ni-trucks i.c0{color:var(--ni-s1)}
+.ni-trucks i.c1{color:var(--ni-s2)}
+.ni-trucks i.c2{color:var(--ni-s3)}
 .ni-ready .ni-trucks i{opacity:1;transform:none}
 .ni-stack{display:flex;gap:2px;height:12px;border-radius:6px;overflow:hidden;background:#fff}
 .ni-stack i{display:block;height:100%;width:0;transition:width .7s ease;outline:none}
 .ni-ready .ni-stack i{width:var(--w)}
-.ni-stack .p{background:var(--ni-s1)}.ni-stack .t{background:var(--ni-s2)}
-.ni-stack-legend{display:flex;gap:26px;margin-top:12px}
+.ni-stack .c0{background:var(--ni-s1)}.ni-stack .c1{background:var(--ni-s2)}.ni-stack .c2{background:var(--ni-s3)}
+.sw.c0{background:var(--ni-s1)}.sw.c1{background:var(--ni-s2)}.sw.c2{background:var(--ni-s3)}
+.ni-legend .sw+.ni-term{margin-right:8px}
+.ni-stack-legend{display:flex;flex-wrap:wrap;gap:8px 26px;margin-top:12px}
 .ni-stack-legend div{display:flex;align-items:baseline;gap:6px}
 .ni-stack-legend .sw{width:10px;height:10px;border-radius:3px;align-self:center}
 .ni-stack-legend b{font-size:24px;color:var(--navy)}
@@ -232,11 +235,13 @@
 .ni-seg .seg span{display:flex;align-items:center;gap:7px;font-size:16px;font-weight:900;white-space:nowrap}
 .ni-seg .s0{background:var(--ni-s1);color:#fff}
 .ni-seg .s1{background:var(--ni-s2);color:var(--ni-s2-ink)}
+.ni-seg .s2{background:var(--ni-s3);color:#fff}
 .ni-seg-legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:14px}
 .ni-seg-item{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:10px;background:var(--ni-canvas)}
 .ni-seg-ico{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;font-size:19px;flex:none}
 .ni-seg-ico.s0{background:var(--ni-s1);color:#fff}
 .ni-seg-ico.s1{background:var(--ni-s2);color:var(--ni-s2-ink)}
+.ni-seg-ico.s2{background:var(--ni-s3);color:#fff}
 .ni-seg-item b{display:block;font-size:24px;color:var(--navy);line-height:1.1}
 .ni-seg-item span{font-size:11px;color:var(--ni-text2);font-weight:700}
 
@@ -356,3 +361,15 @@
   .ni-modal.show,.ni-box{animation:none}
   .ni-modal *{transition:none!important}
 }
+
+/* ---------- Datos reales (PDF de red logística) ---------- */
+.ni-kpi-note{display:flex;align-items:flex-start;gap:5px;margin:8px 0 0;font-size:10px;line-height:1.4;color:var(--ni-text3)}
+.ni-kpi-note .lx-ico{font-size:11px;margin-top:1px}
+.ni-head-meta .ni-src-chip{cursor:help}
+.ni-gps-empty{flex:1;display:grid;place-content:center;justify-items:center;text-align:center;gap:4px;padding:16px;border-radius:10px;background:var(--ni-canvas);color:var(--ni-text3)}
+.ni-gps-empty .lx-ico{font-size:26px;margin-bottom:4px;color:#a6b5c4}
+.ni-gps-empty b{font-size:12px;color:var(--ni-text2)}
+.ni-gps-empty small{font-size:10.5px;max-width:200px;line-height:1.45}
+.ni-stat-note{font-style:normal;font-size:9px;color:var(--ni-text3);margin-top:2px}
+.ni-rank li.otros .name{color:var(--ni-text2);font-style:italic}
+.ni-rank li.otros .bar i{background:#b3c3d3}
