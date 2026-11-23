@@ -10,6 +10,10 @@
        split   → composición de 2 partes (barra 100 %), p. ej. ensacado vs tolvas
        ranking → participación por canal (barras horizontales)
        stats   → cifras sueltas (costos, promedios)
+   - capitulo / pregunta (opcionales): en qué capítulo de la ficha se muestra el
+     bloque (entregas, canales, resultados) y la pregunta que responde.
+   - flujo (opcional por negocio): reemplaza el flujo conceptual
+     ORIGEN → CARGA → TRANSPORTE → ENTREGA → DESTINO con etapas propias.
    ========================================================================== */
 const negociosIndicadores = {
   ejemplo: true,
@@ -28,12 +32,12 @@ const negociosIndicadores = {
         ],
         tendencia: { label: 'Viajes por mes', unidad: 'viajes', valores: [3180, 3240, 3305, 3290, 3410, 3420] },
         bloques: [
-          { tipo: 'split', titulo: 'Modalidad de entrega', unidad: '%', partes: [
+          { tipo: 'split', capitulo: 'entregas', pregunta: '¿Cómo realizamos las entregas?', titulo: 'Modalidad de entrega', unidad: '%', partes: [
             { label: 'Distribución', valor: 62 }, { label: 'Recoge (cliente)', valor: 38 } ] },
-          { tipo: 'ranking', titulo: 'Participación por canal de venta', unidad: '%', partes: [
+          { tipo: 'ranking', capitulo: 'canales', pregunta: '¿A qué canales atendemos?', titulo: 'Participación por canal de venta', unidad: '%', partes: [
             { label: 'Distribuidores', valor: 34 }, { label: 'Mayoristas distribución', valor: 27 },
             { label: 'Mayoristas Norte', valor: 22 }, { label: 'Mayoristas Sur', valor: 17 } ] },
-          { tipo: 'stats', titulo: 'Venta de pollo', items: [
+          { tipo: 'stats', capitulo: 'resultados', pregunta: '¿Qué resultados obtuvimos?', titulo: 'Venta de pollo', comparaCon: 'Toneladas', items: [
             { label: 'Venta del mes', valor: 22100, unidad: 't' },
             { label: 'Promedio mensual', valor: 21850, unidad: 't' } ] }
         ],
@@ -74,7 +78,7 @@ const negociosIndicadores = {
         ],
         tendencia: { label: 'Viajes por mes', unidad: 'viajes', valores: [805, 812, 826, 818, 831, 840] },
         bloques: [
-          { tipo: 'split', titulo: 'Destino de la producción', unidad: '%', partes: [
+          { tipo: 'split', capitulo: 'entregas', pregunta: '¿A dónde va la producción?', titulo: 'Destino de la producción', unidad: '%', partes: [
             { label: 'Granja propia', valor: 81 }, { label: 'Venta', valor: 19 } ] }
         ],
         flota: { unidades: 7, propias: 7, terceros: 0, gps: 7, tipo: 'Furgón isotérmico', imagen: '' }
@@ -90,7 +94,7 @@ const negociosIndicadores = {
         ],
         tendencia: { label: 'Viajes por mes', unidad: 'viajes', valores: [392, 398, 401, 405, 404, 410] },
         bloques: [
-          { tipo: 'split', titulo: 'Destino de la producción', unidad: '%', partes: [
+          { tipo: 'split', capitulo: 'entregas', pregunta: '¿A dónde va la producción?', titulo: 'Destino de la producción', unidad: '%', partes: [
             { label: 'Granja propia', valor: 92 }, { label: 'Venta', valor: 8 } ] }
         ],
         flota: { unidades: 4, propias: 4, terceros: 0, gps: 4, tipo: 'Furgón isotérmico', imagen: '' }
@@ -106,9 +110,9 @@ const negociosIndicadores = {
         ],
         tendencia: { label: 'Viajes por mes', unidad: 'viajes', valores: [1890, 1902, 1944, 1950, 1961, 1980] },
         bloques: [
-          { tipo: 'split', titulo: 'Despacho: ensacado vs. tolvas', unidad: 't', partes: [
+          { tipo: 'split', capitulo: 'entregas', pregunta: '¿En qué formato despachamos?', titulo: 'Despacho: ensacado vs. tolvas', unidad: 't', partes: [
             { label: 'Granel (tolvas)', valor: 42050 }, { label: 'Ensacado', valor: 16350 } ] },
-          { tipo: 'stats', titulo: 'Traslado planta → granja', items: [
+          { tipo: 'stats', capitulo: 'resultados', pregunta: '¿Cuánto cuesta llevar el alimento a granja?', titulo: 'Traslado planta → granja', items: [
             { label: 'Costo del mes', valor: 1460000, moneda: true },
             { label: 'Promedio mensual', valor: 1425000, moneda: true },
             { label: 'Costo por tonelada', valor: 25, moneda: true } ] }
@@ -126,9 +130,9 @@ const negociosIndicadores = {
         ],
         tendencia: { label: 'Toneladas por mes', unidad: 't', valores: [61200, 60400, 63800, 62900, 64100, 64900] },
         bloques: [
-          { tipo: 'split', titulo: 'Destino de almacenamiento', unidad: '%', partes: [
+          { tipo: 'split', capitulo: 'entregas', pregunta: '¿Dónde almacenamos?', titulo: 'Destino de almacenamiento', unidad: '%', partes: [
             { label: 'Almacén propio', valor: 72 }, { label: 'Almacén tercero', valor: 28 } ] },
-          { tipo: 'stats', titulo: 'Costos del mes', items: [
+          { tipo: 'stats', capitulo: 'resultados', pregunta: '¿Cuánto nos cuesta la operación?', titulo: 'Costos del mes', items: [
             { label: 'Costo de almacenaje', valor: 385000, moneda: true },
             { label: 'Costo de traslado', valor: 912000, moneda: true } ] }
         ],
@@ -145,7 +149,7 @@ const negociosIndicadores = {
         ],
         tendencia: { label: 'Viajes por mes', unidad: 'viajes', valores: [288, 295, 301, 299, 306, 310] },
         bloques: [
-          { tipo: 'stats', titulo: 'Costos del mes', items: [
+          { tipo: 'stats', capitulo: 'resultados', pregunta: '¿Cuánto nos cuesta la operación?', titulo: 'Costos del mes', items: [
             { label: 'Costo de almacenaje', valor: 148000, moneda: true },
             { label: 'Costo de traslado', valor: 96000, moneda: true } ] }
         ],

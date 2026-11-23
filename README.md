@@ -27,6 +27,7 @@ extraídos a `assets/` sin recomprimir ni modificar.
 │   ├── filtro-eventos.js       # Filtros de la agenda de eventos
 │   ├── carrusel-hero.js        # Carrusel automático del inicio (flechas, puntos, teclado, swipe)
 │   ├── carrusel-badge.js       # Etiqueta "CARRUSEL AUTOMÁTICO"
+│   ├── iconos.js               # Iconos Lucide (locales, sin CDN)
 │   ├── negocios-datos.js       # Indicadores por negocio (datos de la ficha)
 │   └── negocios-ficha.js       # Ficha de indicadores al hacer clic en un negocio
 └── assets/
@@ -81,16 +82,29 @@ La versión separada se comparó contra el HTML original con Chromium (Playwrigh
   flechas y puntos del carrusel, contraer/expandir secciones, menú activo al
   hacer scroll, botón "volver arriba" y enlaces a Power BI.
 
-## Ficha de indicadores por negocio
+## Ficha ejecutiva de indicadores por negocio
 
-En la sección **03 · Nuestros negocios**, cada tarjeta abre una ficha con:
-indicadores del mes (unidades movidas, viajes, km, toneladas, con comparación
-contra el promedio mensual), tendencia de los últimos meses, flota asignada y
-bloques propios de cada negocio (ensacado vs. tolvas, granja vs. venta, canales
-de venta, costos, almacén tercero). Tiene selector San Fernando / Chimu,
-navegación entre negocios y un botón que filtra Analítica con los dashboards
-del área.
+En la sección **03 · Nuestros negocios**, cada tarjeta abre una ficha a pantalla
+casi completa, organizada como una historia en capítulos (cada uno responde una
+pregunta) con navegación lateral (barra superior en móvil):
 
-Los datos están en `js/negocios-datos.js`. Mientras `ejemplo: true`, la ficha
-muestra el aviso **DATOS DE EJEMPLO** (las cifras actuales son ilustrativas).
-Un negocio sin datos para una empresa muestra "Indicadores en preparación".
+| Capítulo | Pregunta | Contenido |
+|---|---|---|
+| Lectura rápida | ¿Qué operación estamos observando? | Resumen en 4 frases, con enlace a cada capítulo |
+| La operación | ¿Cómo funciona la operación? | Flujo conceptual Origen → Carga → Transporte → Entrega → Destino, con la cifra medida en cada etapa |
+| 01 Volumen | ¿Cuánto movilizamos? | KPI con icono, unidad, comparación con el promedio, micrográfico y definición; evolución mensual con título interpretativo |
+| 02 Recursos | ¿Con qué recursos operamos? | Flota en iconos (propias / terceros), cobertura GPS, foto de flota, km por viaje y viajes por unidad (cálculos) |
+| 03 Entregas / Distribución | Según el negocio | Barra segmentada con porcentajes y definiciones |
+| 04 Canales | ¿A qué canales atendemos? | Ranking de mayor a menor |
+| 05 Resultados | ¿Qué resultados obtuvimos? | Venta o costos vs. promedio; aclara que toneladas vendidas ≠ transportadas |
+| Atención | ¿Qué información requiere atención? | Alertas generadas por reglas sobre los datos (costos sobre el promedio, unidades sin GPS, datos pendientes) |
+
+Los capítulos sin datos no se muestran. Los volúmenes se comparan en tono
+neutro; solo costos (menor es mejor) y ventas (mayor es mejor) se marcan como
+*Favorable* o *A vigilar*.
+
+Archivos: `js/negocios-datos.js` (datos), `js/negocios-ficha.js` (lógica),
+`css/negocios-ficha.css` (estilos), `js/iconos.js` (iconos Lucide incluidos
+localmente, licencia ISC). Mientras `ejemplo: true`, la ficha muestra el aviso
+**DATOS DE EJEMPLO**. Un negocio sin datos para una empresa muestra
+"Indicadores en preparación".
