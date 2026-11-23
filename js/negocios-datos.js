@@ -1005,7 +1005,7 @@ const negociosIndicadores = {
           {
             "label": "Toneladas por mes",
             "titulo": "Toneladas por mes",
-            "valor": 405,
+            "valor": 404.6,
             "unidad": "t",
             "nota": "Volumen mensual del diagrama de red (PDF).",
             "icono": "calendar",
@@ -1129,7 +1129,7 @@ const negociosIndicadores = {
               },
               {
                 "label": "Costo por tonelada",
-                "valor": 179,
+                "valor": 179.4,
                 "moneda": true,
                 "decimales": 1
               },
@@ -1885,7 +1885,7 @@ const negociosIndicadores = {
               },
               {
                 "label": "Costo por tonelada",
-                "valor": 300,
+                "valor": 300.2,
                 "moneda": true,
                 "decimales": 1
               },
