@@ -17,8 +17,12 @@ extraídos a `assets/` sin recomprimir ni modificar.
 │   ├── styles.css              # Los 9 bloques <style> originales, en el mismo orden
 │   └── negocios-ficha.css      # Estilos de la ficha de indicadores por negocio
 ├── datos/
-│   ├── LOGIXSC_Datos_Fichas.xlsx     # FUENTE de las fichas de negocio (editar este)
-│   └── LOGIXSC_Plantilla_Datos.xlsx  # Plantilla de datos editable
+│   ├── LOGIXSC_Datos_Fichas.xlsx          # FUENTE de las fichas de negocio (editar este)
+│   ├── LOGIXSC_Solicitud_Datos_Jefatura.xlsx # Formato de reunión: validar/sincerar cifras (no lo lee el portal)
+│   └── LOGIXSC_Plantilla_Datos.xlsx       # Primera plantilla (ya no se usa)
+├── herramientas/
+│   ├── generar_formato_reunion.py   # Crea el formato de reunión desde Datos_Fichas
+│   └── aplicar_formato_reunion.py   # Pasa los valores sincerados a Datos_Fichas
 ├── js/
 │   ├── datos.js                # Datos: dashboards Power BI y portafolio de proyectos
 │   ├── analitica-proyectos.js  # Analítica (empresas/áreas) e Implementación (filtros)
@@ -118,6 +122,23 @@ sin librerías externas). Si no puede leerlo —por ejemplo, al abrir
 `index.html` con doble clic en vez de un servidor—, usa la copia de respaldo
 `js/negocios-datos.js`. Esa copia no se actualiza sola: conviene regenerarla
 de vez en cuando a partir del Excel.
+
+### Validar las cifras con jefatura
+
+`datos/LOGIXSC_Solicitud_Datos_Jefatura.xlsx` trae precargadas todas las cifras
+que hoy muestra el portal, con su origen (PDF, cálculo o interpretación). En la
+reunión se marca el estado de cada una y se escribe el valor sincerado. Después:
+
+```bash
+python3 herramientas/aplicar_formato_reunion.py datos/LOGIXSC_Solicitud_Datos_Jefatura.xlsx datos/LOGIXSC_Datos_Fichas.xlsx
+```
+
+Para volver a generar el formato a partir del Excel del portal (por ejemplo, en
+la siguiente revisión):
+
+```bash
+python3 herramientas/generar_formato_reunion.py datos/LOGIXSC_Datos_Fichas.xlsx datos/LOGIXSC_Solicitud_Datos_Jefatura.xlsx
+```
 
 **Fuente actual de los datos:** los PDF de red logística (`assets/docs/`):
 costos, costo unitario, flota y volumen anual 2024, y los repartos del diagrama
