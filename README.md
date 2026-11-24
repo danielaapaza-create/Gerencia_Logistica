@@ -18,8 +18,7 @@ extraídos a `assets/` sin recomprimir ni modificar.
 │   └── negocios-ficha.css      # Estilos de la ficha de indicadores por negocio
 ├── datos/
 │   ├── LOGIXSC_Datos_Fichas.xlsx          # FUENTE de las fichas de negocio (editar este)
-│   ├── LOGIXSC_Solicitud_Datos_Jefatura.xlsx # Formato de reunión: validar/sincerar cifras (no lo lee el portal)
-│   └── LOGIXSC_Plantilla_Datos.xlsx       # Primera plantilla (ya no se usa)
+│   └── LOGIXSC_Solicitud_Datos_Jefatura.xlsx # Formato de reunión: validar/sincerar cifras (no lo lee el portal)
 ├── herramientas/
 │   ├── generar_formato_reunion.py   # Crea el formato de reunión desde Datos_Fichas
 │   └── aplicar_formato_reunion.py   # Pasa los valores sincerados a Datos_Fichas
