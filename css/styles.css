@@ -989,3 +989,6 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;bac
  backdrop-filter:blur(7px)
 }
 .hero-live-badge span{display:inline-block;width:7px;height:7px;border-radius:50%;background:#e30620;margin-right:6px}
+
+/* Secciones o enlaces ocultos con el atributo hidden */
+#implementacion[hidden],.nav a[hidden],nav a[hidden]{display:none!important}
