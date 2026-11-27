@@ -17,7 +17,8 @@ extraídos a `assets/` sin recomprimir ni modificar.
 │   ├── styles.css              # Los 9 bloques <style> originales, en el mismo orden
 │   ├── negocios-ficha.css      # Estilos de la ficha de indicadores por negocio
 │   ├── eventos.css             # Estilos de la agenda logística
-│   └── analitica.css           # Estilos de la sección Analítica
+│   ├── analitica.css           # Estilos de la sección Analítica
+│   └── equipo.css              # Quiénes somos: tarjeta que gira y organigrama
 ├── datos/
 │   ├── LOGIXSC_Datos_Fichas.xlsx          # FUENTE de las fichas de negocio (editar este)
 │   ├── LOGIXSC_Solicitud_Datos_Jefatura.xlsx # Formato de reunión: validar/sincerar cifras (no lo lee el portal)
@@ -30,6 +31,8 @@ extraídos a `assets/` sin recomprimir ni modificar.
 │   ├── datos.js                # Datos: dashboards Power BI y portafolio de proyectos
 │   ├── analitica-proyectos.js  # Implementación (portafolio de proyectos, sección oculta)
 │   ├── analitica.js            # Analítica: KPI y catálogo de dashboards
+│   ├── organigramas-datos.js   # Equipos de cada líder (editar aquí)
+│   ├── equipo-organigrama.js   # Tarjeta que gira y organigrama completo
 │   ├── visor-pdf.js            # Modal visor de PDF (Red logística)
 │   ├── secciones-colapsables.js# Contraer/expandir secciones
 │   ├── interactividad.js       # Barra de progreso, menú activo, animación reveal, volver arriba
@@ -215,6 +218,15 @@ partir de ellos, en tres niveles:
 
 Los filtros conservan los `id` originales (`aSearch`, `aCompany`, `aArea`), que
 usa la ficha de negocios para abrir la analítica de un área.
+
+## Organigramas (Quiénes somos)
+
+Las tarjetas con `data-org="clave"` muestran el botón **Ver equipo**: la
+tarjeta gira y en el reverso aparece el equipo agrupado por sede. Desde ahí,
+**Ver organigrama** lo abre en grande. Los equipos están en
+`js/organigramas-datos.js` (fuente: Teams → Organización). Para agregar el
+equipo de otro líder, crea su bloque con una clave nueva y pon esa clave en
+`data-org` de su tarjeta.
 
 ## Caché del navegador
 
