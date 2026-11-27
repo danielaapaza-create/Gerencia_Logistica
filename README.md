@@ -36,7 +36,9 @@ extraídos a `assets/` sin recomprimir ni modificar.
 │   ├── negocios-excel.js       # Lee datos/LOGIXSC_Datos_Fichas.xlsx en el navegador
 │   ├── negocios-ficha.js       # Ficha de indicadores al hacer clic en un negocio
 │   ├── eventos-datos.js        # Agenda logística: lista de eventos (editar aquí)
-│   └── eventos.js              # Agenda logística: tarjetas, filtros y estados
+│   ├── eventos.js              # Agenda logística: tarjetas, filtros y estados
+│   ├── hitos-datos.js          # Hitos del equipo: lista de hitos (editar aquí)
+│   └── hitos.js                # Hitos del equipo: destacado, tarjetas y filtro
 └── assets/
     ├── docs/
     │   ├── red-logistica-san-fernando.pdf
@@ -164,3 +166,13 @@ las áreas del filtro salen de los propios eventos.
 Los filtros (buscador, área, Próximos / Pasados / Todos y "Limpiar filtros")
 actualizan las tarjetas al instante. Si no hay resultados, se muestra un mensaje
 con la opción de limpiar los filtros.
+
+### Hitos del equipo
+
+Debajo de la agenda, el bloque **Hitos del equipo** muestra logros,
+reconocimientos, capacitaciones y actividades. Los datos están en
+`js/hitos-datos.js`: fecha, categoría, empresa, área, título, descripción,
+impacto (cifra y etiqueta), equipo, foto, `destacado` y `confirmar`. El hito
+destacado se muestra en grande. Los filtros solo muestran las categorías que
+tienen hitos. Mientras `confirmar` sea `true`, la tarjeta muestra
+"Por confirmar".
