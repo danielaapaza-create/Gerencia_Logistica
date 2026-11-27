@@ -993,3 +993,11 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;bac
 /* Secciones o enlaces ocultos con el atributo hidden */
 #implementacion[hidden],.nav a[hidden],nav a[hidden]{display:none!important}
 .person-role{display:block;font-size:12px;font-weight:700;color:#07356f;margin:-4px 0 8px}
+
+/* Quiénes somos: frase de cada líder */
+#equipo .person-card{display:flex;flex-direction:column}
+#equipo .person-copy{display:flex;flex-direction:column;flex:1}
+.person-quote{position:relative;margin:16px 0 0;padding:14px 0 0 30px;border-top:1px solid #e3eaf2;margin-top:auto}
+#equipo .person-copy>p{margin-bottom:16px}
+.person-quote:before{content:"\201C";position:absolute;left:0;top:6px;font-family:Georgia,"Times New Roman",serif;font-size:44px;line-height:1;color:#e30613}
+.person-quote p{margin:0;font-size:13px!important;line-height:1.55!important;font-style:italic;color:#2c4560!important}
