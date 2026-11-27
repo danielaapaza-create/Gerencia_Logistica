@@ -2,59 +2,7 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt
 const uniq = (arr) => [...new Set(arr.filter(Boolean))].sort((a,b)=>a.localeCompare(b,'es'));
 const num = s => parseFloat(String(s||'').replace('%','').replace(',','.')) || 0;
 
-const companySelect = document.getElementById('aCompany');
-const areaSelect = document.getElementById('aArea');
-uniq(analyticsData.map(x=>x.empresa)).forEach(v=>companySelect.insertAdjacentHTML('beforeend',`<option>${esc(v)}</option>`));
-uniq(analyticsData.map(x=>x.area)).forEach(v=>areaSelect.insertAdjacentHTML('beforeend',`<option>${esc(v)}</option>`));
-
-function renderAnalytics(){
-  const q = document.getElementById('aSearch').value.toLowerCase();
-  const company = companySelect.value;
-  const area = areaSelect.value;
-  const rows = analyticsData.filter(x =>
-    (!q || [x.dashboard,x.area,x.responsable,x.jefatura,x.gerencia,x.empresa].join(' ').toLowerCase().includes(q)) &&
-    (company==='TODAS' || x.empresa===company) &&
-    (area==='TODAS' || x.area===area)
-  );
-
-  const grouped = {};
-  rows.forEach(x => {
-    grouped[x.empresa] ??= {};
-    grouped[x.empresa][x.area] ??= [];
-    grouped[x.empresa][x.area].push(x);
-  });
-
-  const order = ['SAN FERNANDO','CHIMU',...uniq(Object.keys(grouped))];
-  const companies = uniq(order).filter(x=>grouped[x]);
-
-  document.getElementById('companyGrid').innerHTML = companies.length ? companies.map((co,ci)=>{
-    const areas = Object.keys(grouped[co]).sort((a,b)=>a.localeCompare(b,'es'));
-    const total = areas.reduce((n,a)=>n+grouped[co][a].length,0);
-    const isChimu = co.toUpperCase()==='CHIMU';
-    return `<article class="company-card ${isChimu?'chimu':''}">
-      <div class="company-title">
-        <div class="company-name"><div class="company-logo">${isChimu?'CH':'SF'}</div><div><strong>${esc(co)}</strong><span>${co.toUpperCase()==='SAN FERNANDO'?'La buena familia':'Así nos gusta el pollo'}</span></div></div>
-        <span class="company-count">${total} dashboard${total===1?'':'s'}</span>
-      </div>
-      ${areas.map((ar,i)=>`<div class="area-row" data-area-key="${esc(co+'|'+ar)}">
-        <button class="area-button" type="button" onclick="toggleArea(this)">
-          <span class="area-left"><span class="area-dot"></span><strong>${esc(ar)}</strong></span>
-          <span style="display:flex;align-items:center;gap:10px"><span class="area-count">${grouped[co][ar].length} dashboard${grouped[co][ar].length===1?'':'s'}</span><span class="chev">⌄</span></span>
-        </button>
-        <div class="dash-list">${grouped[co][ar].map(x=>`
-          <div class="dashboard">
-            <div><h4>${esc(x.dashboard)}</h4><div class="dashboard-meta">Responsable: <b>${esc(x.responsable||'—')}</b> · Jefatura: <b>${esc(x.jefatura||'—')}</b><br>Actualización: ${esc(x.fecha||'—')} ${esc(x.hora||'')}</div></div>
-            ${/^https?:\/\//i.test(x.url) ? `<a href="${esc(x.url)}" target="_blank" rel="noopener noreferrer">ABRIR POWER BI ↗</a>` : `<span class="no-link">ENLACE PENDIENTE</span>`}
-          </div>`).join('')}</div>
-      </div>`).join('')}
-    </article>`;
-  }).join('') : '<div style="grid-column:1/-1;padding:35px;text-align:center;color:#7b8fa4;font-size:10px">No hay dashboards con los filtros seleccionados.</div>';
-}
-function toggleArea(btn){ btn.closest('.area-row').classList.toggle('open'); }
-companySelect.addEventListener('change',renderAnalytics);
-areaSelect.addEventListener('change',renderAnalytics);
-document.getElementById('aSearch').addEventListener('input',renderAnalytics);
-renderAnalytics();
+/* La sección Analítica (catálogo de dashboards) está en js/analitica.js. */
 
 const pCompany = document.getElementById('pCompany');
 const pResponsible = document.getElementById('pResponsible');

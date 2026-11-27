@@ -16,7 +16,8 @@ extraídos a `assets/` sin recomprimir ni modificar.
 ├── css/
 │   ├── styles.css              # Los 9 bloques <style> originales, en el mismo orden
 │   ├── negocios-ficha.css      # Estilos de la ficha de indicadores por negocio
-│   └── eventos.css             # Estilos de la agenda logística
+│   ├── eventos.css             # Estilos de la agenda logística
+│   └── analitica.css           # Estilos de la sección Analítica
 ├── datos/
 │   ├── LOGIXSC_Datos_Fichas.xlsx          # FUENTE de las fichas de negocio (editar este)
 │   ├── LOGIXSC_Solicitud_Datos_Jefatura.xlsx # Formato de reunión: validar/sincerar cifras (no lo lee el portal)
@@ -27,7 +28,8 @@ extraídos a `assets/` sin recomprimir ni modificar.
 │   └── excel_a_eventos.py           # Pasa LOGIXSC_Eventos_Hitos.xlsx a js/eventos-datos.js y js/hitos-datos.js
 ├── js/
 │   ├── datos.js                # Datos: dashboards Power BI y portafolio de proyectos
-│   ├── analitica-proyectos.js  # Analítica (empresas/áreas) e Implementación (filtros)
+│   ├── analitica-proyectos.js  # Implementación (portafolio de proyectos, sección oculta)
+│   ├── analitica.js            # Analítica: KPI, gráfico por área y catálogo de dashboards
 │   ├── visor-pdf.js            # Modal visor de PDF (Red logística)
 │   ├── secciones-colapsables.js# Contraer/expandir secciones
 │   ├── interactividad.js       # Barra de progreso, menú activo, animación reveal, volver arriba
@@ -199,6 +201,22 @@ python3 herramientas/excel_a_eventos.py datos/LOGIXSC_Eventos_Hitos.xlsx
 El script reescribe `js/eventos-datos.js` y `js/hitos-datos.js`. Las filas
 incompletas y las personas sin autorización no se publican; el script lo
 indica como aviso.
+
+## Analítica logística (sección 05)
+
+Los datos siguen en `analyticsData` (`js/datos.js`). La sección se arma sola a
+partir de ellos, en tres niveles:
+
+1. **KPI**: dashboards totales, por empresa y áreas con analítica.
+2. **Dashboards por área**: barras apiladas San Fernando / Chimu. Al hacer clic
+   en un área, se filtra el catálogo.
+3. **Catálogo**: buscador (sin importar tildes), filtros de empresa y área,
+   botón Limpiar y tarjetas por empresa con áreas desplegables. Cada dashboard
+   muestra responsable, jefatura, fecha de actualización y el botón
+   "Abrir en Power BI".
+
+Los filtros conservan los `id` originales (`aSearch`, `aCompany`, `aArea`), que
+usa la ficha de negocios para abrir la analítica de un área.
 
 ## Caché del navegador
 
