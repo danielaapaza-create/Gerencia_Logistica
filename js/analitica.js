@@ -1,4 +1,4 @@
-/* Analítica logística: KPI, gráfico de dashboards por área y catálogo filtrable.
+/* Analítica logística: KPI y catálogo filtrable de dashboards.
    Datos: analyticsData (js/datos.js). Iconos: js/iconos.js.
    Los filtros conservan los id originales (aSearch, aCompany, aArea), que usa
    también la ficha de negocios para abrir la analítica de un área. */
@@ -53,30 +53,6 @@
   $('axKpis').innerHTML = kpis.map(k => '<div class="ax-kpi ' + k.cls + '"><span class="ax-kpi-ico">' + ico(k.ico) + '</span>' +
     '<div><small>' + h(k.label) + '</small><strong>' + k.valor + '</strong><span>' + h(k.nota) + '</span></div></div>').join('');
 
-  // Gráfico: dashboards por área (barras apiladas por empresa)
-  const filasGraf = areas.map(a => ({ a, partes: empresas.map(e => ({ e, n: datos.filter(x => x.area === a && x.empresa === e).length })) }))
-    .map(f => Object.assign(f, { total: f.partes.reduce((s, p) => s + p.n, 0) }))
-    .sort((x, y) => y.total - x.total || porNombre(x.a, y.a));
-  const maximo = Math.max(...filasGraf.map(f => f.total), 1);
-  function pintarBarras() {
-    $('axBarras').innerHTML = filasGraf.map(f => {
-      const detalle = f.partes.filter(p => p.n).map(p => p.n + ' ' + emp(p.e).nombre).join(', ');
-      return '<button type="button" class="ax-barra' + (selArea.value === f.a ? ' is-activa' : '') + '" data-area="' + h(f.a) + '" ' +
-        'aria-pressed="' + (selArea.value === f.a) + '" aria-label="' + h(nombreArea(f.a)) + ': ' + f.total + ' dashboards (' + h(detalle) + ')">' +
-        '<span class="ax-barra-lbl">' + h(nombreArea(f.a)) + '</span>' +
-        '<span class="ax-barra-pista"><span class="ax-barra-fill" style="width:' + (f.total / maximo * 100).toFixed(1) + '%">' +
-          f.partes.filter(p => p.n).map(p => '<i class="' + emp(p.e).cls + '" style="flex:' + p.n + '" title="' + h(emp(p.e).nombre) + ': ' + p.n + '"></i>').join('') +
-        '</span></span>' +
-        '<span class="ax-barra-val">' + f.total + '</span></button>';
-    }).join('');
-  }
-  $('axBarras').addEventListener('click', ev => {
-    const b = ev.target.closest('.ax-barra'); if (!b) return;
-    selArea.value = selArea.value === b.dataset.area ? 'TODAS' : b.dataset.area;
-    render();
-    sec.querySelector('.ax-detalle').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
-  });
-
   // Catálogo
   const abiertas = new Set();
   function render() {
@@ -87,7 +63,6 @@
     selEmp.classList.toggle('is-activo', co !== 'TODAS'); selArea.classList.toggle('is-activo', ar !== 'TODAS');
     buscar.closest('.ax-input').classList.toggle('is-activo', !!q);
     $('axConteo').textContent = 'Mostrando ' + filas.length + ' de ' + datos.length + ' dashboards';
-    pintarBarras();
 
     const abrirTodo = !!q || ar !== 'TODAS';
     const grupos = empresas.filter(e => filas.some(x => x.empresa === e));

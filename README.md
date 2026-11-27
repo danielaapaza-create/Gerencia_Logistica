@@ -29,7 +29,7 @@ extraídos a `assets/` sin recomprimir ni modificar.
 ├── js/
 │   ├── datos.js                # Datos: dashboards Power BI y portafolio de proyectos
 │   ├── analitica-proyectos.js  # Implementación (portafolio de proyectos, sección oculta)
-│   ├── analitica.js            # Analítica: KPI, gráfico por área y catálogo de dashboards
+│   ├── analitica.js            # Analítica: KPI y catálogo de dashboards
 │   ├── visor-pdf.js            # Modal visor de PDF (Red logística)
 │   ├── secciones-colapsables.js# Contraer/expandir secciones
 │   ├── interactividad.js       # Barra de progreso, menú activo, animación reveal, volver arriba
@@ -208,9 +208,7 @@ Los datos siguen en `analyticsData` (`js/datos.js`). La sección se arma sola a
 partir de ellos, en tres niveles:
 
 1. **KPI**: dashboards totales, por empresa y áreas con analítica.
-2. **Dashboards por área**: barras apiladas San Fernando / Chimu. Al hacer clic
-   en un área, se filtra el catálogo.
-3. **Catálogo**: buscador (sin importar tildes), filtros de empresa y área,
+2. **Catálogo**: buscador (sin importar tildes), filtros de empresa y área,
    botón Limpiar y tarjetas por empresa con áreas desplegables. Cada dashboard
    muestra responsable, jefatura, fecha de actualización y el botón
    "Abrir en Power BI".
