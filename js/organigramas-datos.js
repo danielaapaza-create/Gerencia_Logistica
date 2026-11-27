@@ -18,5 +18,25 @@ const organigramas = {
       { nombre: 'German Toscano Gonzales',           cargo: 'Almacenero',                           sede: 'Almacén Sachilsa' },
       { nombre: 'Jesus Alberto Talla Pachas',        cargo: 'Asistente de Almacén',                 sede: 'Cabeza de Toro' }
     ]
+  },
+  'luis-gallo': {
+    lider: { nombre: 'Luis Miguel Gallo Villar', cargo: 'Jefe de Operaciones Logísticas', area: 'Gerencia de Logística' },
+    fuente: 'Microsoft Teams · noviembre 2026',
+    equipo: [
+      { nombre: 'Gustavo David Zegarra Jimenez',  cargo: 'Coordinador de Operaciones Logísticas', sede: 'Planta Alimentos · Lurín' },
+      { nombre: 'Juan Jose Salazar Canales',      cargo: 'Asistente de Operaciones Logísticas',   sede: 'Planta Alimentos · Lurín' },
+      { nombre: 'Alcides Mendoza Cantorin',       cargo: 'Coordinador de Flota',                  sede: 'Planta Alimentos · Lurín' },
+      { nombre: 'Luis Marcelo Picho Huacre',      cargo: 'Coordinador de Flota',                  sede: 'Planta Alimentos · Lurín' },
+      { nombre: 'Ruben Pedro Rios Canales',       cargo: 'Coordinador de Flota',                  sede: 'Planta Alimentos · Lurín' },
+      { nombre: 'Alex Bruno Pacheco Estrada',     cargo: 'Coordinador de Flota',                  sede: 'Planta Alimentos · Chancay' },
+      { nombre: 'David Nemesio Conroy Gargate',   cargo: 'Coordinador de Flota',                  sede: 'Planta Alimentos · Chancay' },
+      { nombre: 'Jorge Luis Uriarte Cruz',        cargo: 'Coordinador de Flota',                  sede: 'Planta Alimentos · Chancay' },
+      { nombre: 'Deyvi Jacinto Remigio Ventura',  cargo: 'Coordinador de Flota',                  sede: 'Planta Incubación · Chancay' },
+      { nombre: 'Miguel Serapio Gotia Enciso',    cargo: 'Coordinador de Flota',                  sede: 'Planta Incubación · Chancay' },
+      { nombre: 'Junior Javier Camillo Bedon',    cargo: 'Asistente de Despacho 3',               sede: 'Planta Incubación · Chancay' },
+      { nombre: 'Robert Joan Garcia Alarcon',     cargo: 'Coordinador de Operaciones',            sede: 'Planta Incubación · Mala' },
+      { nombre: 'Frank Jose Espinoza Quillama',   cargo: 'Coordinador de Flota',                  sede: 'Planta Incubación · Mala' },
+      { nombre: 'Segundo Jesus Paredes Cruz',     cargo: 'Coordinador de Flota',                  sede: 'Planta Incubación · Mala' }
+    ]
   }
 };

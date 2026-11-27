@@ -5,8 +5,8 @@
   const ico = (n, c) => (typeof icono === 'function' ? icono(n, c) : '');
   const h = s => String(s == null ? '' : s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
   const ini = n => String(n).split(/\s+/).filter(Boolean).slice(0, 2).map(p => p[0]).join('').toUpperCase();
-  const nombreCorto = n => { const p = String(n).split(/\s+/); return p.length > 3 ? p[0] + ' ' + p[p.length - 2] : n; };
-  const peso = c => (/supervisor/i.test(c) ? 0 : /asistente de operaciones/i.test(c) ? 1 : 2);
+  const nombreCorto = n => { const p = String(n).split(/\s+/); return p.length > 3 ? p[0] + ' ' + p[p.length - 2] : p.length === 3 ? p[0] + ' ' + p[1] : n; };
+  const peso = c => (/supervisor|coordinador de operaciones/i.test(c) ? 0 : /asistente de operaciones/i.test(c) ? 1 : 2);
 
   function porSede(org) {
     const sedes = [];
