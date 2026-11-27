@@ -170,7 +170,9 @@ con la opción de limpiar los filtros.
 ### Hitos del equipo
 
 Debajo de la agenda, el bloque **Hitos del equipo** es una línea de tiempo
-agrupada por año (del más reciente al más antiguo). Los datos están en
+horizontal: de izquierda a derecha en orden cronológico, con marcas de año,
+flechas para avanzar y deslizamiento en celular. Al cargar, muestra el hito
+más reciente. Los datos están en
 `js/hitos-datos.js`. Las categorías son: lanzamiento, aniversario laboral,
 bienvenida, hito operativo, reconocimiento, capacitación y actividad del equipo.
 

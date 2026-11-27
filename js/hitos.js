@@ -95,24 +95,51 @@
       $('hxLista').innerHTML = '<div class="ag-vacio" role="status">' + ico('flag', 'ag-vacio-ico') + '<strong>Aún no hay hitos registrados.</strong></div>';
       return;
     }
-    // Agrupar por año (los sin fecha, al final)
-    const grupos = [];
-    lista.forEach(h => {
+    // Orden cronológico de izquierda a derecha; los que no tienen fecha, al final.
+    const fechados = lista.filter(h => h.fecha).sort((a, b) => clave(a.fecha).localeCompare(clave(b.fecha)));
+    const sinFecha = lista.filter(h => !h.fecha);
+    let html = '', anio = null;
+    fechados.concat(sinFecha).forEach(h => {
       const g = h.fecha ? h.fecha.slice(0, 4) : 'Por confirmar';
-      let gr = grupos.find(x => x.anio === g);
-      if (!gr) grupos.push(gr = { anio: g, items: [] });
-      gr.items.push(h);
+      if (g !== anio) { anio = g; html += '<li class="hx-marca" aria-hidden="true"><span>' + esc(g) + '</span></li>'; }
+      const c = cat(h.categoria);
+      html += '<li class="hx-item cat-' + esc(h.categoria) + '">' +
+        '<div class="hx-eje"><span class="hx-dot" aria-hidden="true">' + ico(c.icono) + '</span>' +
+        (h.fecha ? '<time class="hx-cuando" datetime="' + esc(h.fecha) + '">' + fechaTxt(h.fecha) + (h.fecha.length > 7 ? ' de ' : ' ') + h.fecha.slice(0, 4) + '</time>'
+                 : '<span class="hx-cuando">Fecha por confirmar</span>') + '</div>' +
+        (PERSONA[h.categoria] ? cardPersona(h) : cardGeneral(h)) + '</li>';
     });
-    let n = 0;
-    $('hxLista').innerHTML = '<div class="hx-tl">' + grupos.map(g =>
-      '<section class="hx-anio" aria-label="' + esc(g.anio) + '"><h4 class="hx-anio-tit"><span>' + esc(g.anio) + '</span></h4><ol class="hx-items">' +
-      g.items.map(h => {
-        const c = cat(h.categoria), lado = (n++ % 2) ? 'der' : 'izq';
-        return '<li class="hx-item lado-' + lado + ' cat-' + esc(h.categoria) + '">' +
-          '<span class="hx-dot" aria-hidden="true">' + ico(c.icono) + '</span>' +
-          (h.fecha ? '<time class="hx-cuando" datetime="' + esc(h.fecha) + '">' + fechaTxt(h.fecha) + '</time>' : '<span class="hx-cuando"></span>') +
-          (PERSONA[h.categoria] ? cardPersona(h) : cardGeneral(h)) + '</li>';
-      }).join('') + '</ol></section>').join('') + '</div>';
+    $('hxLista').innerHTML =
+      '<div class="hx-tl">' +
+        '<button type="button" class="hx-nav prev" aria-label="Hitos anteriores">' + ico('chevron-left') + '</button>' +
+        '<div class="hx-track" tabindex="0" role="region" aria-label="Línea de tiempo de hitos (desplazar horizontalmente)"><ol class="hx-items">' + html + '</ol></div>' +
+        '<p class="hx-hint" aria-hidden="true">Desliza para ver más hitos →</p>' +
+        '<button type="button" class="hx-nav next" aria-label="Hitos siguientes">' + ico('chevron-right') + '</button>' +
+      '</div>';
+    prepararScroll();
+  }
+
+  function prepararScroll() {
+    const tl = raiz.querySelector('.hx-tl'); if (!tl) return;
+    const track = tl.querySelector('.hx-track');
+    const prev = tl.querySelector('.prev'), next = tl.querySelector('.next');
+    const paso = () => { const it = track.querySelector('.hx-item'); return it ? it.getBoundingClientRect().width + 18 : 320; };
+    const estado = () => {
+      const max = track.scrollWidth - track.clientWidth - 2;
+      prev.disabled = track.scrollLeft <= 2; next.disabled = track.scrollLeft >= max;
+      tl.classList.toggle('sin-scroll', max <= 0);
+      tl.classList.toggle('en-inicio', track.scrollLeft <= 2);
+      tl.classList.toggle('en-fin', track.scrollLeft >= max);
+    };
+    prev.addEventListener('click', () => track.scrollBy({ left: -paso(), behavior: 'smooth' }));
+    next.addEventListener('click', () => track.scrollBy({ left: paso(), behavior: 'smooth' }));
+    track.addEventListener('scroll', estado, { passive: true });
+    window.addEventListener('resize', estado);
+    // Empezar mostrando el hito más reciente
+    const fechados = [...track.querySelectorAll('.hx-item')].filter(li => li.querySelector('time'));
+    const ultimo = fechados[fechados.length - 1];
+    if (ultimo) track.scrollLeft = Math.max(0, ultimo.offsetLeft + ultimo.offsetWidth - track.clientWidth + 40);
+    estado();
   }
   render();
 })();
