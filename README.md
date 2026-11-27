@@ -176,3 +176,10 @@ impacto (cifra y etiqueta), equipo, foto, `destacado` y `confirmar`. El hito
 destacado se muestra en grande. Los filtros solo muestran las categorías que
 tienen hitos. Mientras `confirmar` sea `true`, la tarjeta muestra
 "Por confirmar".
+
+## Caché del navegador
+
+En `index.html`, los CSS y JS se cargan con `?v=AAAAMMDD` (por ejemplo
+`css/eventos.css?v=20261127`). Cuando cambies un CSS o JS, actualiza ese número
+en todas las líneas. Así el navegador descarga la versión nueva y no usa una
+copia vieja guardada.
