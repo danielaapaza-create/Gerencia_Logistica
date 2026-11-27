@@ -169,13 +169,17 @@ con la opción de limpiar los filtros.
 
 ### Hitos del equipo
 
-Debajo de la agenda, el bloque **Hitos del equipo** muestra logros,
-reconocimientos, capacitaciones y actividades. Los datos están en
-`js/hitos-datos.js`: fecha, categoría, empresa, área, título, descripción,
-impacto (cifra y etiqueta), equipo, foto, `destacado` y `confirmar`. El hito
-destacado se muestra en grande. Los filtros solo muestran las categorías que
-tienen hitos. Mientras `confirmar` sea `true`, la tarjeta muestra
-"Por confirmar".
+Debajo de la agenda, el bloque **Hitos del equipo** es una línea de tiempo
+agrupada por año (del más reciente al más antiguo). Los datos están en
+`js/hitos-datos.js`. Las categorías son: lanzamiento, aniversario laboral,
+bienvenida, hito operativo, reconocimiento, capacitación y actividad del equipo.
+
+- Hitos generales: título, descripción, impacto (cifra y etiqueta), equipo y foto.
+- Aniversarios y bienvenidas: persona, cargo, área, años en la empresa, mensaje y
+  foto. Sin foto se muestran las iniciales.
+- Las fechas futuras muestran "Próximamente"; `confirmar: true` muestra
+  "Por confirmar".
+- Los filtros solo muestran las categorías que tienen hitos.
 
 ## Caché del navegador
 
