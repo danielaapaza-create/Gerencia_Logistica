@@ -19,10 +19,12 @@ extraídos a `assets/` sin recomprimir ni modificar.
 │   └── eventos.css             # Estilos de la agenda logística
 ├── datos/
 │   ├── LOGIXSC_Datos_Fichas.xlsx          # FUENTE de las fichas de negocio (editar este)
-│   └── LOGIXSC_Solicitud_Datos_Jefatura.xlsx # Formato de reunión: validar/sincerar cifras (no lo lee el portal)
+│   ├── LOGIXSC_Solicitud_Datos_Jefatura.xlsx # Formato de reunión: validar/sincerar cifras (no lo lee el portal)
+│   └── LOGIXSC_Eventos_Hitos.xlsx         # Recopilar agenda, hitos, aniversarios y bienvenidas
 ├── herramientas/
 │   ├── generar_formato_reunion.py   # Crea el formato de reunión desde Datos_Fichas
-│   └── aplicar_formato_reunion.py   # Pasa los valores sincerados a Datos_Fichas
+│   ├── aplicar_formato_reunion.py   # Pasa los valores sincerados a Datos_Fichas
+│   └── excel_a_eventos.py           # Pasa LOGIXSC_Eventos_Hitos.xlsx a js/eventos-datos.js y js/hitos-datos.js
 ├── js/
 │   ├── datos.js                # Datos: dashboards Power BI y portafolio de proyectos
 │   ├── analitica-proyectos.js  # Analítica (empresas/áreas) e Implementación (filtros)
@@ -182,6 +184,21 @@ bienvenida, hito operativo, reconocimiento, capacitación y actividad del equipo
 - Las fechas futuras muestran "Próximamente"; `confirmar: true` muestra
   "Por confirmar".
 - Los filtros solo muestran las categorías que tienen hitos.
+
+### Recopilar eventos e hitos
+
+`datos/LOGIXSC_Eventos_Hitos.xlsx` tiene una hoja por tipo de contenido:
+Agenda, Hitos y Aniversarios_Bienvenidas. Cada hoja incluye listas
+desplegables, una columna "Control" y cálculos automáticos (años que cumple
+cada persona y fecha del aniversario). Una vez lleno:
+
+```bash
+python3 herramientas/excel_a_eventos.py datos/LOGIXSC_Eventos_Hitos.xlsx
+```
+
+El script reescribe `js/eventos-datos.js` y `js/hitos-datos.js`. Las filas
+incompletas y las personas sin autorización no se publican; el script lo
+indica como aviso.
 
 ## Caché del navegador
 
