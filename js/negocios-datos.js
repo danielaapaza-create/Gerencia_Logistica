@@ -528,7 +528,7 @@ const negociosIndicadores = {
           ],
           "tipo": "Furgón",
           "detalle": "22 unidades en renting",
-          "imagen": ""
+          "imagen": "assets/img/flota/sf-pollo-bebe.jpg"
         },
         "pendientes": [
           "Viajes y kilómetros recorridos: no figuran en el PDF.",
@@ -837,7 +837,7 @@ const negociosIndicadores = {
           ],
           "tipo": "Tracto + tolva granelera",
           "detalle": "62 unidades: tractos de flota tercera; tolvas 39 propias y 23 terceras",
-          "imagen": ""
+          "imagen": "assets/img/flota/sf-alimento-balanceado.jpg"
         },
         "pendientes": [
           "Viajes y kilómetros recorridos: no figuran en el PDF.",
