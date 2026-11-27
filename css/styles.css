@@ -992,3 +992,4 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;bac
 
 /* Secciones o enlaces ocultos con el atributo hidden */
 #implementacion[hidden],.nav a[hidden],nav a[hidden]{display:none!important}
+.person-role{display:block;font-size:12px;font-weight:700;color:#07356f;margin:-4px 0 8px}
