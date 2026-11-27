@@ -7,6 +7,7 @@
 <meta name="description" content="Portal interno de la Gerencia de Logística - LOGIXSC+">
 <link rel="stylesheet" href="css/styles.css">
 <link rel="stylesheet" href="css/negocios-ficha.css">
+<link rel="stylesheet" href="css/eventos.css">
 </head>
 <body>
 
@@ -182,67 +183,40 @@
 </section>
 
 <section class="section" id="eventos"><div class="container">
-  <div class="section-head"><div><div class="section-kicker">06 · EVENTOS LOGÍSTICA</div><h2>Agenda que conecta<br>a nuestros equipos.</h2></div><p>Actividades, comités y espacios de coordinación para mantener alineada la operación de cada negocio.</p></div>
-  <div class="events-toolbar">
-    <div class="events-count"><strong id="eventCount">5</strong><span>eventos registrados</span></div>
-    <div class="event-filters">
-      <select id="eventTypeFilter" aria-label="Filtrar por tipo">
-        <option value="">Todos los tipos</option>
-        <option value="REUNION SEMANAL">Reunión semanal</option>
-        <option value="REUNION COMITÉ">Reunión comité</option>
-      </select>
-      <select id="eventBusinessFilter" aria-label="Filtrar por negocio">
-        <option value="">Todos los negocios</option>
-        <option value="TODOS">Todos</option>
-        <option value="FACTURACION Y PROYECTOS">Facturación y proyectos</option>
-        <option value="MACROINSUMOS, ALIMENTO BALANCEADO, POLLO BEBE Y HUEVO INCUBABLE">Macroinsumos · Alimento · BB · Huevo</option>
-        <option value="AVES VIVAS">Aves vivas</option>
-      </select>
+  <div class="section-head ag-head">
+    <div>
+      <div class="section-kicker">06 · EVENTOS LOGÍSTICA</div>
+      <h2 class="ag-title"><span class="ag-title-ico" data-icono="calendar-days"></span>Agenda logística</h2>
+      <div class="ag-proximos" id="agResumen" aria-live="polite"></div>
     </div>
+    <p>Organiza reuniones, conecta equipos y mantente al día con las actividades de la gerencia.</p>
   </div>
-  <div class="events-v14 events-real-grid">
-    <article class="event-business event-real" data-type="REUNION SEMANAL" data-business="TODOS">
-      <div class="event-datebox"><strong>28</strong><span>08</span></div>
-      <div class="event-info">
-        <div class="event-topline"><span class="event-date">REUNION SEMANAL</span><span class="event-index">EVENTO 01</span></div>
-        <h3>TODOS</h3>
-        <p><b>09:00 – 10:30</b> · CERDITO-PISO 7</p>
-        <span class="event-meta">EVENTOS EN LA SEMANA</span>
+
+  <div class="ag-shell">
+    <form class="ag-filtros" id="agFiltros" role="search" aria-label="Filtrar eventos" onsubmit="return false">
+      <div class="ag-campo ag-buscar">
+        <label for="agBuscar">Buscar</label>
+        <div class="ag-input"><span data-icono="search"></span><input id="agBuscar" type="search" placeholder="Nombre de reunión, tema o lugar" autocomplete="off"></div>
       </div>
-    </article><article class="event-business event-real" data-type="REUNION COMITÉ" data-business="FACTURACION Y PROYECTOS">
-      <div class="event-datebox"><strong>01</strong><span>09</span></div>
-      <div class="event-info">
-        <div class="event-topline"><span class="event-date">REUNION COMITÉ</span><span class="event-index">EVENTO 02</span></div>
-        <h3>FACTURACION Y PROYECTOS</h3>
-        <p><b>09:00 – 11:00</b> · ALMACEN CENTRAL</p>
-        <span class="event-meta">INDICADORES Y AVANCES</span>
+      <div class="ag-campo">
+        <label for="agArea">Área o negocio</label>
+        <select id="agArea"><option value="">Todas las áreas</option></select>
       </div>
-    </article><article class="event-business event-real" data-type="REUNION SEMANAL" data-business="TODOS">
-      <div class="event-datebox"><strong>04</strong><span>09</span></div>
-      <div class="event-info">
-        <div class="event-topline"><span class="event-date">REUNION SEMANAL</span><span class="event-index">EVENTO 03</span></div>
-        <h3>TODOS</h3>
-        <p><b>09:00 – 10:30</b> · CERDITO-PISO 7</p>
-        <span class="event-meta">EVENTOS EN LA SEMANA</span>
-      </div>
-    </article><article class="event-business event-real" data-type="REUNION COMITÉ" data-business="MACROINSUMOS, ALIMENTO BALANCEADO, POLLO BEBE Y HUEVO INCUBABLE">
-      <div class="event-datebox"><strong>08</strong><span>09</span></div>
-      <div class="event-info">
-        <div class="event-topline"><span class="event-date">REUNION COMITÉ</span><span class="event-index">EVENTO 04</span></div>
-        <h3>MACROINSUMOS, ALIMENTO BALANCEADO, POLLO BEBE Y HUEVO INCUBABLE</h3>
-        <p><b>09:00 – 11:00</b> · ALMACEN CENTRAL</p>
-        <span class="event-meta">INDICADORES Y AVANCES</span>
-      </div>
-    </article><article class="event-business event-real" data-type="REUNION COMITÉ" data-business="AVES VIVAS">
-      <div class="event-datebox"><strong>08</strong><span>09</span></div>
-      <div class="event-info">
-        <div class="event-topline"><span class="event-date">REUNION COMITÉ</span><span class="event-index">EVENTO 05</span></div>
-        <h3>AVES VIVAS</h3>
-        <p><b>15:00 – 17:00</b> · ALMACEN CENTRAL</p>
-        <span class="event-meta">INDICADORES Y AVANCES</span>
-      </div>
-    </article>
-  </div></div></section>
+      <fieldset class="ag-campo ag-cuando">
+        <legend>Fecha</legend>
+        <div class="ag-seg">
+          <label><input type="radio" name="agCuando" value="proximos" checked><span>Próximos</span></label>
+          <label><input type="radio" name="agCuando" value="pasados"><span>Pasados</span></label>
+          <label><input type="radio" name="agCuando" value="todos"><span>Todos</span></label>
+        </div>
+      </fieldset>
+      <button type="button" class="ag-limpiar" id="agLimpiar" disabled><span data-icono="rotate-ccw"></span>Limpiar filtros<b id="agActivos" hidden></b></button>
+    </form>
+    <p class="ag-conteo" id="agConteo" aria-live="polite"></p>
+    <div id="agResultados"></div>
+    <noscript><p class="ag-vacio">Activa JavaScript para ver la agenda.</p></noscript>
+  </div>
+  </div></section>
 
 <section class="section alt tech-v15" id="tecnologias"><div class="container">
   <div class="section-head"><div><div class="section-kicker">07 · TECNOLOGÍAS</div><h2>Tecnología aplicada a la operación.</h2></div><p>Herramientas que convierten datos operativos en control, automatización y mejores decisiones.</p></div>
@@ -280,7 +254,6 @@
 
 <script src="js/interactividad.js"></script>
 
-<script src="js/filtro-eventos.js"></script>
 
 
 <script src="js/carrusel-hero.js"></script>
@@ -291,5 +264,7 @@
 <script src="js/negocios-datos.js"></script>
 <script src="js/negocios-excel.js"></script>
 <script src="js/negocios-ficha.js"></script>
+<script src="js/eventos-datos.js"></script>
+<script src="js/eventos.js"></script>
 </body>
 </html>

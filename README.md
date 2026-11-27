@@ -15,7 +15,8 @@ extraídos a `assets/` sin recomprimir ni modificar.
 ├── .nojekyll                   # GitHub Pages sirve los archivos tal cual
 ├── css/
 │   ├── styles.css              # Los 9 bloques <style> originales, en el mismo orden
-│   └── negocios-ficha.css      # Estilos de la ficha de indicadores por negocio
+│   ├── negocios-ficha.css      # Estilos de la ficha de indicadores por negocio
+│   └── eventos.css             # Estilos de la agenda logística
 ├── datos/
 │   ├── LOGIXSC_Datos_Fichas.xlsx          # FUENTE de las fichas de negocio (editar este)
 │   └── LOGIXSC_Solicitud_Datos_Jefatura.xlsx # Formato de reunión: validar/sincerar cifras (no lo lee el portal)
@@ -28,13 +29,14 @@ extraídos a `assets/` sin recomprimir ni modificar.
 │   ├── visor-pdf.js            # Modal visor de PDF (Red logística)
 │   ├── secciones-colapsables.js# Contraer/expandir secciones
 │   ├── interactividad.js       # Barra de progreso, menú activo, animación reveal, volver arriba
-│   ├── filtro-eventos.js       # Filtros de la agenda de eventos
 │   ├── carrusel-hero.js        # Carrusel automático del inicio (flechas, puntos, teclado, swipe)
 │   ├── carrusel-badge.js       # Etiqueta "CARRUSEL AUTOMÁTICO"
 │   ├── iconos.js               # Iconos Lucide (locales, sin CDN)
 │   ├── negocios-datos.js       # Respaldo de los datos de las fichas
 │   ├── negocios-excel.js       # Lee datos/LOGIXSC_Datos_Fichas.xlsx en el navegador
-│   └── negocios-ficha.js       # Ficha de indicadores al hacer clic en un negocio
+│   ├── negocios-ficha.js       # Ficha de indicadores al hacer clic en un negocio
+│   ├── eventos-datos.js        # Agenda logística: lista de eventos (editar aquí)
+│   └── eventos.js              # Agenda logística: tarjetas, filtros y estados
 └── assets/
     ├── docs/
     │   ├── red-logistica-san-fernando.pdf
@@ -150,3 +152,15 @@ Archivos: `js/negocios-datos.js` (datos), `js/negocios-ficha.js` (lógica),
 localmente, licencia ISC). Mientras `ejemplo: true`, la ficha muestra el aviso
 **DATOS DE EJEMPLO**. Un negocio sin datos para una empresa muestra
 "Indicadores en preparación".
+
+## Agenda logística (sección 06 · Eventos)
+
+Los eventos están en `js/eventos-datos.js`, uno por línea (fecha `AAAA-MM-DD`,
+hora de inicio y fin, tipo, área, tema, lugar, responsable y si se canceló).
+Para agregar uno, copia una línea y cambia los valores. El estado (Próxima, Hoy,
+En curso, Finalizada) se calcula solo con la fecha y la hora del navegador, y
+las áreas del filtro salen de los propios eventos.
+
+Los filtros (buscador, área, Próximos / Pasados / Todos y "Limpiar filtros")
+actualizan las tarjetas al instante. Si no hay resultados, se muestra un mensaje
+con la opción de limpiar los filtros.
